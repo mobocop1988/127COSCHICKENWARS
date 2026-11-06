@@ -3,165 +3,187 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Stardew Chicken Wars '26</title>
+  <title>Chicken Wars '26</title>
   <link rel="shortcut icon" type="image/x-icon" href="chicken.ico">
 
-  <!-- Retro Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Google Fonts: Retro 8-bit Pixel Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
-  <!-- Supabase JS SDK -->
+  <!-- Supabase JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Stylesheet -->
+  <!-- Main Stardew-Style Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- BACKGROUND SCENERY LAYERS -->
+  <!-- Background Environment Layers -->
   <div class="sky-gradient-bg"></div>
-  <div class="cloud-layer cloud-layer-back"></div>
-  <div class="cloud-layer cloud-layer-front"></div>
-  <div class="pixel-mountains"></div>
-  <div class="pixel-hills"></div>
+  <div class="pixel-clouds-layer-1" id="cloud-layer-1"></div>
+  <div class="pixel-clouds-layer-2" id="cloud-layer-2"></div>
+  <div class="rolling-hills-bg"></div>
+  <div class="animated-grass-backdrop"></div>
+  <div class="crt-scanline-overlay"></div>
 
-  <!-- Falling Chicken Strips & Feathers Container -->
-  <div id="feather-canvas-container"></div>
+  <!-- Swaying Golden Wheat Farm Banner -->
+  <div class="swaying-wheat-bar" id="wheat-farm-bar"></div>
 
-  <!-- Animated Swaying Golden Wheat Bottom Banner -->
-  <div class="swaying-wheat-bar">
-    <div class="wheat-stalk-layer"></div>
-    <div class="wheat-ear-heads"></div>
-  </div>
+  <!-- Falling Particles: Elongated Fried Chicken Tenders & Feathery Feathers -->
+  <div id="particle-canvas-container"></div>
 
-  <!-- MASCOT SWARM OVERLAY CONTAINER -->
+  <!-- Swarm Container for 5-Second Mascot Breakout -->
   <div id="mascot-swarm-container"></div>
 
-  <!-- RETRO JUKEBOX MUSIC PLAYER (Top-Left) -->
-  <div class="retro-jukebox-player">
-    <button id="music-toggle-btn" class="jukebox-btn" aria-label="Toggle Barn Music">
-      <div class="jukebox-disc-icon">
-        <svg viewBox="0 0 24 24" width="22" height="22">
-          <circle cx="12" cy="12" r="11" fill="#1b110a" stroke="#d49b3d" stroke-width="2"/>
-          <circle cx="12" cy="12" r="7" fill="#4d2b15" stroke="#fbe282" stroke-width="1"/>
-          <circle cx="12" cy="12" r="3" fill="#9e5b2b"/>
-          <circle cx="12" cy="12" r="1.5" fill="#fbe282"/>
+  <!-- Single Pop-Up Mascot Container -->
+  <div id="mascot-container">
+    <div id="mascot-bubble" class="mascot-speech-bubble">Bok-bagawk!!!</div>
+    <div id="mascot-sprite-wrapper">
+      <svg id="mascot-svg" viewBox="0 0 96 96" width="130" height="130" style="image-rendering: pixelated;">
+        <rect x="22" y="26" width="52" height="52" rx="20" fill="#fdf0d5" stroke="#2c1a0e" stroke-width="4"/>
+        <path d="M 40 18 Q 48 10 56 18 Q 48 24 40 18 Z" fill="#d9383a" stroke="#2c1a0e" stroke-width="3"/>
+        <path d="M 48 12 Q 54 4 60 12" fill="#d9383a" stroke="#2c1a0e" stroke-width="3"/>
+        <path d="M 36 34 Q 48 26 60 34 Q 48 44 36 34 Z" fill="#ef8354" stroke="#2c1a0e" stroke-width="3"/>
+        <rect x="36" y="40" width="24" height="14" fill="#ffcca0"/>
+        <rect x="38" y="42" width="4" height="4" fill="#000"/>
+        <rect x="54" y="42" width="4" height="4" fill="#000"/>
+        <polygon points="48,46 43,53 53,53" fill="#f39a3e" stroke="#2c1a0e" stroke-width="2"/>
+        <path d="M 33 46 Q 33 60 48 64 Q 63 60 63 46 Z" fill="#583119" stroke="#2c1a0e" stroke-width="3"/>
+        <circle cx="39" cy="46" r="1.5" fill="#fdf0d5"/>
+        <circle cx="57" cy="46" r="1.5" fill="#fdf0d5"/>
+        <g id="mascot-left-wing" class="mascot-wing">
+          <ellipse cx="18" cy="50" rx="10" ry="16" fill="#f4d06f" stroke="#2c1a0e" stroke-width="3" transform="rotate(-15 18 50)"/>
+        </g>
+        <g id="mascot-right-wing" class="mascot-wing">
+          <ellipse cx="78" cy="50" rx="10" ry="16" fill="#f4d06f" stroke="#2c1a0e" stroke-width="3" transform="rotate(15 78 50)"/>
+        </g>
+        <polygon points="46,55 48,61 50,55" fill="#d9383a"/>
+        <rect x="34" y="78" width="6" height="12" fill="#f39a3e" stroke="#2c1a0e" stroke-width="2"/>
+        <rect x="56" y="78" width="6" height="12" fill="#f39a3e" stroke="#2c1a0e" stroke-width="2"/>
+        <polygon points="28,90 42,90 37,84" fill="#f39a3e" stroke="#2c1a0e" stroke-width="2"/>
+        <polygon points="54,90 68,90 59,84" fill="#f39a3e" stroke="#2c1a0e" stroke-width="2"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Top-Left Retro Jukebox Music Console -->
+  <div class="top-audio-bar">
+    <button class="jukebox-btn" id="audio-toggle-btn" onclick="AudioModule.toggleMusic()" title="Play / Pause Farm Tunes">
+      <div class="jukebox-icon-wrapper">
+        <svg class="jukebox-svg" viewBox="0 0 32 32" width="22" height="22">
+          <path d="M 6 30 L 6 12 Q 6 2 16 2 Q 26 2 26 12 L 26 30 Z" fill="#9c5421" stroke="#3b1d08" stroke-width="2"/>
+          <path d="M 10 14 Q 10 6 16 6 Q 22 6 22 14" fill="#fde8b3" stroke="#3b1d08" stroke-width="1.5"/>
+          <circle cx="16" cy="18" r="5" fill="#1b120c"/>
+          <circle cx="16" cy="18" r="1.5" fill="#e59b24"/>
+          <rect x="9" y="24" width="14" height="5" fill="#3b1d08"/>
         </svg>
+        <div class="jukebox-equalizer" id="jukebox-equalizer">
+          <span></span><span></span><span></span>
+        </div>
       </div>
-      <span class="jukebox-label">BARN TUNES</span>
-      <div class="jukebox-eq">
-        <span class="bar bar-1"></span>
-        <span class="bar bar-2"></span>
-        <span class="bar bar-3"></span>
-      </div>
+      <span class="jukebox-status-text" id="audio-status-label">TUNE: OFF</span>
     </button>
   </div>
 
-  <!-- SECRET GOLDEN EGG EASTER EGG BUTTON (Randomized location on load) -->
-  <button id="secret-easter-egg-btn" class="secret-easter-egg" onclick="MascotModule.triggerSwarm()" aria-label="Secret Egg">
-    <svg viewBox="0 0 32 40" width="36" height="46">
+  <!-- Secret Floating Golden Egg Easter Egg -->
+  <div id="secret-easter-egg-btn" onclick="MascotModule.triggerSwarm()" title="What is this doing here...?">
+    <svg viewBox="0 0 40 50" width="36" height="44" class="golden-egg-svg">
+      <path d="M 20 2 C 7 2 2 19 2 33 C 2 43 10 48 20 48 C 30 48 38 43 38 33 C 38 19 33 2 20 2 Z" 
+            fill="url(#goldGradient)" stroke="#684206" stroke-width="2.5"/>
+      <ellipse cx="14" cy="16" rx="4" ry="7" fill="#fff7b0" opacity="0.6" transform="rotate(-25 14 16)"/>
+      <circle cx="28" cy="28" r="2.2" fill="#d88f11" opacity="0.7"/>
+      <circle cx="16" cy="36" r="1.8" fill="#d88f11" opacity="0.7"/>
+      <circle cx="24" cy="14" r="1.5" fill="#d88f11" opacity="0.7"/>
       <defs>
-        <radialGradient id="eggShine" cx="35%" cy="30%" r="65%">
-          <stop offset="0%" stop-color="#fff5cc"/>
-          <stop offset="40%" stop-color="#f8ce4e"/>
-          <stop offset="85%" stop-color="#c98a12"/>
-          <stop offset="100%" stop-color="#734403"/>
-        </radialGradient>
+        <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#fff4a3" />
+          <stop offset="45%" stop-color="#f6be2b" />
+          <stop offset="100%" stop-color="#b67104" />
+        </linearGradient>
       </defs>
-      <path d="M16 2 C7 2, 2 14, 2 24 C2 33, 8 38, 16 38 C24 38, 30 33, 30 24 C30 14, 25 2, 16 2 Z" fill="url(#eggShine)" stroke="#422502" stroke-width="2.5"/>
-      <rect x="9" y="14" width="2" height="2" fill="#754805" opacity="0.6"/>
-      <rect x="19" y="11" width="3" height="2" fill="#754805" opacity="0.6"/>
-      <rect x="22" y="22" width="2" height="3" fill="#754805" opacity="0.6"/>
-      <rect x="13" y="27" width="3" height="2" fill="#754805" opacity="0.6"/>
-      <rect x="7" y="23" width="2" height="2" fill="#754805" opacity="0.6"/>
-      <polygon points="10,8 14,6 12,10" fill="#ffffff" opacity="0.7"/>
     </svg>
-  </button>
+  </div>
 
-  <!-- HEADER & WOODEN SIGNBOARD -->
+  <!-- Main Farm Header -->
   <header>
-    <div class="wood-sign-board hanging-sign">
-      <div class="hanging-chains">
-        <span class="chain left"></span>
-        <span class="chain right"></span>
-      </div>
-      <h1 class="title-main">🐔 CHICKEN WARS '26 🐔</h1>
-      <p class="sub-title">127 COS ANNUAL POULTRY CLASH • VALLEY CHAMPIONSHIP</p>
-    </div>
-
-    <!-- Wooden Scoreboard Panel -->
-    <div class="scoreboard-wood">
-      <div class="score-pill" id="profile-pill" onclick="AuthModule.promptSwitchUser()" title="Click to Change Farmer">
-        FARMER: <span id="current-player-name" class="val">GUEST</span>
-      </div>
-      <div class="score-pill">
-        SCORE: <span id="current-player-score" class="val">0</span> PTS
-      </div>
-      <div class="score-pill">
-        BALLOTS LEFT: <span id="user-credits" class="val">8</span>
-      </div>
-      <div class="score-pill">
-        SEASON: <span id="current-stage-title" class="val">ROUND OF 16</span>
-      </div>
-      <div class="score-pill">
-        TOTAL VOTES: <span id="total-ballots" class="val">0</span>
-      </div>
-      <div class="score-pill">
-        <span id="cloud-badge" class="cloud-status-badge cloud-online">● COOP CONNECTED</span>
+    <div class="wood-banner">
+      <div class="wood-banner-border">
+        <h1 class="stardew-title">CHICKEN WARS '26</h1>
       </div>
     </div>
 
-    <!-- Champion Announcement Banner -->
-    <div id="champion-marquee" class="champion-parchment">
-      🏆 SUPREME ROOSTER CHAMPION: <span id="champion-name">TBD</span> 🏆
+    <!-- Farm Scoreboard -->
+    <div class="scoreboard-ribbon">
+      <div class="score-card pilot-card" onclick="AuthModule.promptAuthModal()" title="Click to Change Farmer Login">
+        FARMER: <span id="current-player-name" class="val">VISITOR</span>
+      </div>
+      <div class="score-card points-card">
+        HARVEST PTS: <span id="current-player-score" class="val">0</span>
+      </div>
+      <div class="score-card">
+        EGGS REMAINING: <span id="user-credits" class="val">8</span>
+      </div>
+      <div class="score-card">
+        STAGE: <span id="current-stage-title" class="val">ROUND 1</span>
+      </div>
+      <div class="score-card">
+        BALLOTS CAST: <span id="total-ballots" class="val">0</span>
+      </div>
+      <div class="score-card">
+        <span id="cloud-badge" class="cloud-status-badge cloud-online">● SILO CONNECTED</span>
+      </div>
+    </div>
+
+    <!-- Champion Banner -->
+    <div id="champion-marquee" class="champion-ribbon">
+      ★ THE TOURNAMENT HAS CONCLUDED! TOP ROOSTER CHAMPION: <span id="champion-name"></span> ★
     </div>
 
     <!-- Navigation Tabs -->
     <div class="nav-tabs">
-      <button class="tab-btn active" id="tab-winners" onclick="BracketModule.switchView('winners')">WINNERS BRACKET</button>
-      <button class="tab-btn" id="tab-losers" onclick="BracketModule.switchView('losers')">LOSERS BRACKET</button>
-      <button class="tab-btn" id="tab-grand" onclick="BracketModule.switchView('grand')">GRAND FINALS</button>
-      <button class="tab-btn" id="tab-all" onclick="BracketModule.switchView('all')">FULL ROOSTER VIEW</button>
-      <button class="tab-btn" id="tab-leaderboard" onclick="BracketModule.switchView('leaderboard')">LEADERBOARD ★</button>
-      <button class="tab-btn" id="admin-btn" onclick="BracketModule.requestAdminAuth()">COOP OPERATOR</button>
+      <button class="wood-tab-btn active" id="tab-winners" onclick="BracketModule.switchView('winners')">WINNERS BRACKET</button>
+      <button class="wood-tab-btn" id="tab-losers" onclick="BracketModule.switchView('losers')">LOSERS BRACKET</button>
+      <button class="wood-tab-btn" id="tab-grand" onclick="BracketModule.switchView('grand')">GRAND FINALS</button>
+      <button class="wood-tab-btn full-view-tab-btn" id="tab-all" onclick="BracketModule.switchView('all')">FULL BRACKET ⛶</button>
+      <button class="wood-tab-btn leader-tab-btn" id="tab-leaderboard" onclick="BracketModule.switchView('leaderboard')">LEADERBOARD ★</button>
+      <button class="wood-tab-btn fullscreen-btn" id="fullscreen-toggle-btn" onclick="BracketModule.toggleFullscreen()">FULLSCREEN ⛶</button>
+      <button class="wood-tab-btn admin-trigger-btn" onclick="BracketModule.requestAdminAuth()">COOP OPERATOR</button>
+    </div>
+
+    <!-- Full Bracket Toolbar -->
+    <div class="full-bracket-toolbar" id="full-bracket-toolbar">
+      <div class="toolbar-group">
+        <span class="toolbar-label">JUMP TO:</span>
+        <a href="#winners-anchor" class="toolbar-link" onclick="AudioModule.sfxSwitch()">▲ WINNERS</a>
+        <a href="#losers-anchor" class="toolbar-link" onclick="AudioModule.sfxSwitch()">▼ LOSERS</a>
+        <a href="#grand-anchor" class="toolbar-link" onclick="AudioModule.sfxSwitch()">★ FINALS</a>
+      </div>
+      <div class="toolbar-group">
+        <span class="toolbar-label">ZOOM:</span>
+        <button class="zoom-btn" onclick="BracketModule.setBracketZoom(0.65)">65%</button>
+        <button class="zoom-btn" onclick="BracketModule.setBracketZoom(0.8)">80%</button>
+        <button class="zoom-btn active-zoom" id="zoom-100-btn" onclick="BracketModule.setBracketZoom(1.0)">100%</button>
+      </div>
     </div>
   </header>
 
-  <!-- Full Bracket Zoom Toolbar -->
-  <div class="full-bracket-toolbar" id="full-bracket-toolbar">
-    <div class="toolbar-group">
-      <span class="toolbar-label">JUMP TO:</span>
-      <a href="#winners-anchor" class="toolbar-link">▲ UPPER ROOST</a>
-      <a href="#losers-anchor" class="toolbar-link">▼ UNDERDOG COOP</a>
-      <a href="#grand-anchor" class="toolbar-link">★ FINALS</a>
-    </div>
-    <div class="toolbar-group">
-      <span class="toolbar-label">ZOOM:</span>
-      <button class="stardew-btn btn-sm" onclick="BracketModule.setBracketZoom(0.7)">70%</button>
-      <button class="stardew-btn btn-sm" onclick="BracketModule.setBracketZoom(0.85)">85%</button>
-      <button class="stardew-btn btn-sm" onclick="BracketModule.setBracketZoom(1.0)">100%</button>
-    </div>
-  </div>
-
-  <!-- TOURNAMENT BRACKET MAIN VIEW -->
-  <main id="bracket-super-container">
+  <!-- Super Bracket Container -->
+  <div id="bracket-super-container">
     <div id="zoomable-bracket-wrapper">
 
-      <!-- Winners Bracket -->
-      <div id="winners-anchor" class="section-divider-title">🌾 UPPER ROOST: WINNERS BRACKET</div>
-      <section id="winners-view" class="bracket-container active-view">
+      <!-- Winners View -->
+      <div id="winners-anchor" class="section-divider-title">► UPPER COOP DIVISION (WINNERS BRACKET)</div>
+      <div id="winners-view" class="bracket-container active-view">
         <div class="bracket-rounds-wrapper">
           <div class="bracket-round">
-            <div class="round-header">STAGE 1: ROOST 16</div>
+            <div class="round-header">STAGE 1: ROOSTER 16</div>
             <div class="bouts-list" id="winners-round-1"></div>
           </div>
           <div class="bracket-round">
-            <div class="round-header">STAGE 2: QUARTER-CLUCKS</div>
+            <div class="round-header">STAGE 2: QUARTERFINALS</div>
             <div class="bouts-list" id="winners-round-2"></div>
           </div>
           <div class="bracket-round">
-            <div class="round-header">STAGE 3: COOP SEMIS</div>
+            <div class="round-header">STAGE 3: SEMIFINALS</div>
             <div class="bouts-list" id="winners-round-3"></div>
           </div>
           <div class="bracket-round">
@@ -169,11 +191,11 @@
             <div class="bouts-list" id="winners-round-4"></div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <!-- Losers Bracket -->
-      <div id="losers-anchor" class="section-divider-title">🌽 UNDERDOG COOP: REDEMPTION BRACKET</div>
-      <section id="losers-view" class="bracket-container">
+      <!-- Losers View -->
+      <div id="losers-anchor" class="section-divider-title">► HEN HOUSE REDEMPTION (LOSERS BRACKET)</div>
+      <div id="losers-view" class="bracket-container">
         <div class="bracket-rounds-wrapper">
           <div class="bracket-round">
             <div class="round-header">LOSERS ROUND 1</div>
@@ -196,170 +218,120 @@
             <div class="bouts-list" id="losers-round-5"></div>
           </div>
         </div>
-      </section>
-
-      <!-- Grand Finals -->
-      <div id="grand-anchor" class="section-divider-title">🍳 GRAND CHAMPIONSHIP BOUT</div>
-      <section id="grand-view" class="bracket-container">
-        <div class="grand-finals-wrapper">
-          <div class="round-header">THE GOLDEN EGG SHOWDOWN</div>
-          <div id="grand-finals-bout"></div>
-        </div>
-      </section>
-
-    </div>
-  </main>
-
-  <!-- LEADERBOARD VIEW -->
-  <section id="leaderboard-view" class="bracket-container">
-    <div class="stardew-panel leaderboard-panel">
-      <h2 class="stardew-title">★ TOP CLUCK PREDICTORS // TOWN LEADERBOARD ★</h2>
-      <p class="stardew-subtitle">10 SEED COINS AWARDED FOR EACH ACCURATE PREDICTION</p>
-
-      <div class="cloud-bar">
-        <div>STATUS: <span id="cloud-table-status">CHECKING COOP NETWORK...</span></div>
-        <button class="stardew-btn btn-sm" onclick="BracketModule.fetchCloudLeaderboard()">REFRESH ⟳</button>
       </div>
 
-      <table class="stardew-table">
+      <!-- Grand Finals View -->
+      <div id="grand-anchor" class="section-divider-title">► GRAND FINALS CHAMPIONSHIP SHOWDOWN</div>
+      <div id="grand-view" class="bracket-container">
+        <div style="max-width: 580px; margin: 20px auto;">
+          <div class="round-header">CHAMPIONSHIP ROOST</div>
+          <div id="grand-finals-bout" style="margin-top: 25px;"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Leaderboard View -->
+  <div id="leaderboard-view" class="bracket-container">
+    <div class="leaderboard-panel">
+      <h2 class="leader-title">★ TOWN FAIR // HALL OF CLUCK ★</h2>
+      <p class="leader-subtitle">10 HARVEST POINTS PER CORRECT PREDICTION • SYNCHRONIZED ACROSS PELICAN TOWN</p>
+      <div class="cloud-bar">
+        <div>SILO STATUS: <span id="cloud-table-status" style="color:var(--stardew-gold);">CHECKING SUPABASE...</span></div>
+        <div>
+          <button class="wood-tab-btn" onclick="BracketModule.fetchCloudLeaderboard()" style="padding:4px 8px; font-size:0.55rem;">REFRESH ⟳</button>
+        </div>
+      </div>
+      <table class="leader-table">
         <thead>
           <tr>
-            <th>RANK</th>
-            <th>FARMER (LAST NAME)</th>
-            <th style="text-align:center;">ACCURATE PICKS</th>
-            <th style="text-align:right;">POINTS</th>
+            <th class="rank-col">RANK</th>
+            <th>FARMER (USERNAME)</th>
+            <th style="text-align: center;">ACCURATE PICKS</th>
+            <th style="text-align: right;">HARVEST PTS</th>
           </tr>
         </thead>
         <tbody id="leaderboard-tbody"></tbody>
       </table>
     </div>
-  </section>
+  </div>
 
-  <!-- MODALS -->
+  <!-- Auth Modal: Login or Register -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="parchment-modal-box">
+      <h3 class="modal-title" id="auth-title">PELICAN TOWN FARM REGISTRY</h3>
+      <p class="modal-desc" id="auth-subtitle">Identify yourself to cast votes and submit your bracket predictions!</p>
 
-  <!-- Auth Modal -->
-  <div id="auth-gate-modal" class="modal-overlay">
-    <div class="stardew-dialog-box auth-dialog">
-      <div class="dialog-header-badge">STARDEW CHICKEN WARS</div>
-      <h3 class="dialog-title" id="auth-title">WELCOME TO THE COOP!</h3>
-      <p class="dialog-message" id="auth-message">Are you a returning Farmer or setting up a new coop?</p>
-
-      <div id="auth-step-choice" class="auth-btn-group">
-        <button class="stardew-btn btn-primary" onclick="AuthModule.setAuthMode('login')">LOGIN (RETURNING USER)</button>
-        <button class="stardew-btn btn-success" onclick="AuthModule.setAuthMode('register')">CREATE NEW ACCOUNT</button>
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tab-mode-login" onclick="AuthModule.switchMode('login')">LOGIN</button>
+        <button type="button" class="auth-tab-btn" id="tab-mode-register" onclick="AuthModule.switchMode('register')">NEW FARMER</button>
       </div>
 
-      <form id="auth-form" style="display:none;" onsubmit="AuthModule.handleAuthSubmit(event)">
-        <div class="form-group">
-          <label for="auth-username">LAST NAME (USERNAME):</label>
-          <input type="text" id="auth-username" class="stardew-input" required maxlength="25" placeholder="e.g. MILLER" autocomplete="family-name">
-        </div>
-        <div class="form-group">
-          <label for="auth-password">PASSWORD:</label>
-          <input type="password" id="auth-password" class="stardew-input" required minlength="4" placeholder="••••••••" autocomplete="current-password">
-        </div>
+      <div class="auth-fields">
+        <label class="auth-label" id="username-field-label">USERNAME:</label>
+        <input type="text" id="auth-username" class="modal-input" placeholder="ENTER USERNAME..." maxlength="30" autocomplete="off">
 
-        <p id="auth-error-msg" class="dialog-error"></p>
+        <label class="auth-label">PASSWORD:</label>
+        <input type="password" id="auth-password" class="modal-input" placeholder="ENTER PASSWORD..." autocomplete="off">
+      </div>
 
-        <div class="modal-actions">
-          <button type="submit" id="auth-action-submit" class="stardew-btn btn-primary">SUBMIT</button>
-          <button type="button" class="stardew-btn btn-secondary" onclick="AuthModule.resetToChoice()">BACK</button>
-        </div>
-      </form>
+      <div class="modal-actions" style="margin-top: 15px;">
+        <button type="button" class="wood-tab-btn active" id="auth-submit-btn" onclick="AuthModule.handleAuthSubmit()">SIGN IN</button>
+        <button type="button" class="wood-tab-btn" id="auth-cancel-btn" onclick="AuthModule.closeAuthModal()">PLAY AS GUEST</button>
+      </div>
+      <p id="auth-error-msg" class="auth-error" style="display:none;"></p>
     </div>
   </div>
 
-  <!-- Admin Control Panel Modal -->
+  <!-- Operator Auth Modal -->
+  <div id="admin-auth-modal" class="modal-overlay">
+    <div class="parchment-modal-box" style="border-color: #8b0000;">
+      <h3 class="modal-title" style="color: #8b0000;">COOP MASTER KEY</h3>
+      <p class="modal-desc">Enter the operator passcode to access tournament bracket controls.</p>
+      <input type="password" id="admin-password-input" class="modal-input" placeholder="ENTER PASSCODE..." autocomplete="off">
+      <div class="modal-actions">
+        <button class="wood-tab-btn active" onclick="BracketModule.verifyAdminPassword()">UNLOCK</button>
+        <button class="wood-tab-btn" onclick="BracketModule.closeAdminAuthModal()">CANCEL</button>
+      </div>
+      <p id="admin-pass-error" class="auth-error" style="display: none;">ACCESS DENIED // INCORRECT KEY</p>
+    </div>
+  </div>
+
+  <!-- Operator Admin Drawer -->
   <div id="admin-overlay" class="modal-overlay">
-    <div class="stardew-dialog-box admin-dialog">
+    <div class="admin-dialog">
       <div class="admin-header">
-        <h2 class="dialog-title">COOP MASTER CONTROL</h2>
-        <button class="stardew-btn btn-sm btn-danger" onclick="BracketModule.closeAdmin()">X</button>
+        <h2 class="admin-title">COOP MASTER CONTROL PANEL</h2>
+        <button class="close-admin-btn" onclick="BracketModule.closeAdmin()">X</button>
       </div>
       <div class="admin-actions-bar">
-        <button class="stardew-btn btn-primary" onclick="BracketModule.advanceCurrentStage()">ADVANCE ROUND &gt;&gt;</button>
-        <button class="stardew-btn" onclick="BracketModule.toggleAllBouts(true)">LOCK ALL</button>
-        <button class="stardew-btn" onclick="BracketModule.toggleAllBouts(false)">UNLOCK ALL</button>
-        <button class="stardew-btn btn-danger" onclick="BracketModule.resetTournamentPrompt()">RESET SEASON</button>
+        <button class="wood-tab-btn active" onclick="BracketModule.advanceCurrentStage()">ADVANCE ACTIVE STAGE >></button>
+        <button class="wood-tab-btn" onclick="BracketModule.toggleAllBouts(true)">LOCK ALL MATCHUPS</button>
+        <button class="wood-tab-btn" onclick="BracketModule.toggleAllBouts(false)">UNLOCK ALL MATCHUPS</button>
+        <button class="wood-tab-btn" onclick="BracketModule.resetTournamentPrompt()" style="border-color: #8b0000; color: #8b0000;">RESET TOURNAMENT</button>
       </div>
       <div class="admin-body" id="admin-bout-controls"></div>
     </div>
   </div>
 
-  <!-- Admin Passkey Modal -->
-  <div id="admin-pass-modal" class="modal-overlay">
-    <div class="stardew-dialog-box auth-dialog">
-      <h3 class="dialog-title">OPERATOR PASSKEY</h3>
-      <input type="password" id="admin-password-input" class="stardew-input" placeholder="ENTER CODE...">
-      <p id="admin-pass-error" class="dialog-error" style="display:none;">INVALID PASSKEY</p>
-      <div class="modal-actions">
-        <button class="stardew-btn btn-primary" onclick="BracketModule.verifyAdminPassword()">UNLOCK</button>
-        <button class="stardew-btn btn-secondary" onclick="BracketModule.closeAdminAuthModal()">CANCEL</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vote Switch Modal -->
+  <!-- Vote Confirmation Modal -->
   <div id="confirm-modal" class="modal-overlay">
-    <div class="stardew-dialog-box auth-dialog">
-      <h3 class="dialog-title">CHANGE YOUR PICK?</h3>
-      <p class="dialog-message" id="confirm-modal-text"></p>
+    <div class="parchment-modal-box">
+      <h3 class="modal-title">CHANGE YOUR PREDICTION?</h3>
+      <p class="modal-desc" id="confirm-modal-text">You have already picked a team. Would you like to switch your prediction?</p>
       <div class="modal-actions">
-        <button class="stardew-btn btn-primary" id="confirm-switch-btn">CONFIRM</button>
-        <button class="stardew-btn btn-secondary" onclick="BracketModule.closeConfirmModal()">CANCEL</button>
+        <button class="wood-tab-btn active" id="confirm-switch-btn">CONFIRM SWITCH</button>
+        <button class="wood-tab-btn" onclick="BracketModule.closeConfirmModal()">CANCEL</button>
       </div>
-    </div>
-  </div>
-
-  <!-- SINGLE MASCOT PEEKER (Passive edge pop-ups) -->
-  <div id="mascot-chicken-peeker" class="mascot-peeker-container">
-    <div class="speech-bubble">Bok-bagawk!!!</div>
-    <div class="pixel-chicken-man" onclick="MascotModule.triggerManualPeek()">
-      <svg class="chicken-man-svg" viewBox="0 0 64 64" shape-rendering="crispEdges">
-        <rect x="26" y="2" width="12" height="4" fill="#cc2b2b" />
-        <rect x="24" y="6" width="16" height="4" fill="#e84345" />
-        <rect x="28" y="0" width="8" height="3" fill="#ff5c5c" />
-        <rect x="18" y="10" width="28" height="18" fill="#fdfaf0" />
-        <rect x="16" y="12" width="32" height="14" fill="#fdfaf0" />
-        <rect x="14" y="14" width="36" height="10" fill="#ede5d1" />
-        <polygon points="30,11 34,11 32,17" fill="#f9a825" />
-        <polygon points="31,11 33,11 32,15" fill="#ffd54f" />
-        <rect x="22" y="18" width="20" height="15" fill="#fbd3b0" />
-        <rect x="23" y="20" width="8" height="5" fill="#111111" />
-        <rect x="33" y="20" width="8" height="5" fill="#111111" />
-        <rect x="30" y="22" width="4" height="2" fill="#111111" />
-        <rect x="25" y="21" width="4" height="3" fill="#ffffff" />
-        <rect x="35" y="21" width="4" height="3" fill="#ffffff" />
-        <rect x="27" y="22" width="2" height="2" fill="#000000" />
-        <rect x="37" y="22" width="2" height="2" fill="#000000" />
-        <rect x="23" y="25" width="3" height="2" fill="#f09090" />
-        <rect x="38" y="25" width="3" height="2" fill="#f09090" />
-        <rect x="29" y="26" width="6" height="1" fill="#7d3428" />
-        <rect x="21" y="28" width="22" height="5" fill="#4a2e18" />
-        <rect x="23" y="32" width="18" height="6" fill="#38210f" />
-        <rect x="26" y="37" width="12" height="4" fill="#291608" />
-        <rect x="12" y="36" width="40" height="24" fill="#fdfaf0" />
-        <rect x="10" y="40" width="44" height="18" fill="#f3ecdb" />
-        <rect x="14" y="56" width="36" height="6" fill="#e0d6c0" />
-        <g class="mascot-left-wing">
-          <rect x="4" y="38" width="8" height="14" fill="#fdfaf0" />
-          <rect x="2" y="42" width="4" height="10" fill="#ded4bc" />
-        </g>
-        <g class="mascot-right-wing">
-          <rect x="52" y="38" width="8" height="14" fill="#fdfaf0" />
-          <rect x="58" y="42" width="4" height="10" fill="#ded4bc" />
-        </g>
-        <rect x="18" y="58" width="11" height="5" fill="#f9a825" />
-        <rect x="35" y="58" width="11" height="5" fill="#f9a825" />
-      </svg>
     </div>
   </div>
 
   <footer>
-    127 COS CHICKEN WARS '26 • CRAFTED WITH RETRO STARDEW VALLEY PRIDE • HOSTED ON GITHUB PAGES
+    CHICKEN WARS '26 • CONNECTED TO SUPABASE POULTRY CLUSTER • BUILT WITH PRIDE IN PELICAN TOWN
   </footer>
 
-  <!-- Scripts directly in the same folder -->
+  <!-- Scripts: Loaded from root directory -->
   <script src="config.js"></script>
   <script src="audio.js"></script>
   <script src="auth.js"></script>
