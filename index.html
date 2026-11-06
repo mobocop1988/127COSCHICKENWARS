@@ -3,48 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>127 COS Chicken Wars '26</title>
+  <title>Stardew Chicken Wars '26</title>
   <link rel="shortcut icon" type="image/x-icon" href="chicken.ico">
-  
+
   <!-- Pixelated Retro Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  
+
   <!-- Supabase JS Library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
+
   <!-- Custom Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Background Ambience & Floating Feathers -->
-  <div class="farm-sky-overlay"></div>
+  <!-- LAYERED ANIMATED STARDEW VALLEY BACKGROUND -->
+  <div class="sky-gradient-bg"></div>
+
+  <!-- Drifting Pixel Clouds -->
+  <div class="cloud-layer cloud-layer-back"></div>
+  <div class="cloud-layer cloud-layer-front"></div>
+
+  <!-- Distant Mountain & Rolling Hills Silhouette -->
+  <div class="pixel-mountains"></div>
+  <div class="pixel-hills"></div>
+
+  <!-- Floating Falling Feathers & Golden Leaves -->
   <div id="feather-canvas-container"></div>
 
-  <!-- Music Player Controller -->
-  <div class="audio-control-bar">
-    <button id="music-toggle-btn" class="stardew-btn btn-sm">♪ PLAY MUSIC</button>
-    <span id="now-playing-label">TRACK: [cluck1.mp3]</span>
+  <!-- Animated Swaying Grass & Wildflower Ground Trim -->
+  <div class="swaying-grass-bar"></div>
+
+  <!-- Top Ambient Controls -->
+  <div class="top-nav-bar">
+    <div class="audio-control-bar">
+      <button id="music-toggle-btn" class="stardew-btn btn-sm">♪ PLAY MUSIC</button>
+      <span id="now-playing-label">TRACK: [cluck1.mp3]</span>
+    </div>
+    <div class="mascot-test-bar">
+      <button class="stardew-btn btn-sm btn-mascot-summon" onclick="MascotModule.triggerManualPeek()" title="Summon the Chicken Mascot!">
+        🐔 SUMMON CLUCKER
+      </button>
+    </div>
   </div>
 
-  <!-- Header & Scoreboard -->
+  <!-- Header & Stardew Wooden Signboard -->
   <header>
-    <div class="wood-sign-board">
+    <div class="wood-sign-board hanging-sign">
+      <div class="hanging-chains">
+        <span class="chain left"></span>
+        <span class="chain right"></span>
+      </div>
       <h1 class="title-main">🐔 CHICKEN WARS '26 🐔</h1>
-      <p class="sub-title">127 COS ANNUAL POULTRY CLASH</p>
+      <p class="sub-title">127 COS ANNUAL POULTRY CLASH • VALLEY CHAMPIONSHIP</p>
     </div>
 
+    <!-- Wooden Scoreboard Panel -->
     <div class="scoreboard-wood">
-      <div class="score-pill" id="profile-pill" onclick="AuthModule.promptSwitchUser()">
+      <div class="score-pill" id="profile-pill" onclick="AuthModule.promptSwitchUser()" title="Click to Change Farmer">
         FARMER: <span id="current-player-name" class="val">GUEST</span>
       </div>
       <div class="score-pill">
         SCORE: <span id="current-player-score" class="val">0</span> PTS
       </div>
       <div class="score-pill">
-        BALLOTS REMAINING: <span id="user-credits" class="val">8</span>
+        BALLOTS LEFT: <span id="user-credits" class="val">8</span>
       </div>
       <div class="score-pill">
         SEASON: <span id="current-stage-title" class="val">ROUND OF 16</span>
@@ -92,7 +117,7 @@
   <!-- Tournament Bracket Container -->
   <main id="bracket-super-container">
     <div id="zoomable-bracket-wrapper">
-      
+
       <!-- Winners Bracket -->
       <div id="winners-anchor" class="section-divider-title">🌾 UPPER ROOST: WINNERS BRACKET</div>
       <section id="winners-view" class="bracket-container active-view">
@@ -160,7 +185,7 @@
     <div class="stardew-panel leaderboard-panel">
       <h2 class="stardew-title">★ TOP CLUCK PREDICTORS // TOWN LEADERBOARD ★</h2>
       <p class="stardew-subtitle">10 SEED COINS AWARDED FOR EACH ACCURATE PREDICTION</p>
-      
+
       <div class="cloud-bar">
         <div>STATUS: <span id="cloud-table-status">CHECKING COOP NETWORK...</span></div>
         <button class="stardew-btn btn-sm" onclick="BracketModule.fetchCloudLeaderboard()">REFRESH ⟳</button>
@@ -188,14 +213,12 @@
       <div class="dialog-header-badge">STARDEW CHICKEN WARS</div>
       <h3 class="dialog-title" id="auth-title">WELCOME TO THE COOP!</h3>
       <p class="dialog-message" id="auth-message">Are you a returning Farmer or setting up a new coop?</p>
-      
-      <!-- Step 1: Decision Mode -->
+
       <div id="auth-step-choice" class="auth-btn-group">
         <button class="stardew-btn btn-primary" onclick="AuthModule.setAuthMode('login')">LOGIN (RETURNING USER)</button>
         <button class="stardew-btn btn-success" onclick="AuthModule.setAuthMode('register')">CREATE NEW ACCOUNT</button>
       </div>
 
-      <!-- Step 2: Form Input -->
       <form id="auth-form" style="display:none;" onsubmit="AuthModule.handleAuthSubmit(event)">
         <div class="form-group">
           <label for="auth-username">LAST NAME (USERNAME):</label>
@@ -205,7 +228,7 @@
           <label for="auth-password">PASSWORD:</label>
           <input type="password" id="auth-password" class="stardew-input" required minlength="4" placeholder="••••••••" autocomplete="current-password">
         </div>
-        
+
         <p id="auth-error-msg" class="dialog-error"></p>
 
         <div class="modal-actions">
@@ -258,52 +281,77 @@
     </div>
   </div>
 
-  <!-- 8-Bit Neck-Beard Chicken Mascot Element -->
+  <!-- 8-BIT NECK-BEARD CHICKEN MASCOT PEEKER -->
   <div id="mascot-chicken-peeker" class="mascot-peeker-container">
     <div class="speech-bubble">Bok-bagawk!!!</div>
-    <div class="pixel-chicken-man">
-      <!-- 8-Bit Pixel Art Neckbeard In Chicken Suit (SVG) -->
+    <div class="pixel-chicken-man" onclick="MascotModule.triggerManualPeek()">
+      <!-- Crisp pixel-art SVG: Fat Neck-Beard Man in Chicken Costume -->
       <svg class="chicken-man-svg" viewBox="0 0 64 64" shape-rendering="crispEdges">
-        <!-- Chicken Hat Comb -->
-        <rect x="26" y="2" width="12" height="4" fill="#d9383a" />
-        <rect x="22" y="6" width="20" height="4" fill="#e84345" />
+        <!-- Hat Rooster Comb -->
+        <rect x="26" y="2" width="12" height="4" fill="#cc2b2b" />
+        <rect x="24" y="6" width="16" height="4" fill="#e84345" />
+        <rect x="28" y="0" width="8" height="3" fill="#ff5c5c" />
+
         <!-- White Chicken Hood -->
-        <rect x="18" y="10" width="28" height="18" fill="#fdfcf0" />
-        <rect x="16" y="12" width="32" height="14" fill="#fdfcf0" />
-        <!-- Yellow Chicken Beak on Forehead -->
-        <polygon points="30,12 34,12 32,17" fill="#fbb034" />
+        <rect x="18" y="10" width="28" height="18" fill="#fdfaf0" />
+        <rect x="16" y="12" width="32" height="14" fill="#fdfaf0" />
+        <rect x="14" y="14" width="36" height="10" fill="#ede5d1" />
+
+        <!-- Forehead Beak -->
+        <polygon points="30,11 34,11 32,17" fill="#f9a825" />
+        <polygon points="31,11 33,11 32,15" fill="#ffd54f" />
+
         <!-- Human Face Opening -->
-        <rect x="22" y="18" width="20" height="16" fill="#fbd3b0" />
-        <!-- Eyes & Glasses -->
-        <rect x="24" y="22" width="5" height="3" fill="#1c1c1c" />
-        <rect x="35" y="22" width="5" height="3" fill="#1c1c1c" />
-        <rect x="29" y="23" width="6" height="1" fill="#444" />
-        <rect x="23" y="21" width="7" height="1" fill="#222" />
-        <rect x="34" y="21" width="7" height="1" fill="#222" />
-        <!-- Smirk -->
-        <rect x="29" y="27" width="6" height="1" fill="#a44c3c" />
-        <!-- Iconic Pixel Neckbeard -->
-        <rect x="22" y="29" width="20" height="4" fill="#4a2e18" />
-        <rect x="24" y="33" width="16" height="5" fill="#3b2210" />
-        <rect x="26" y="38" width="12" height="3" fill="#3b2210" />
-        <!-- Fluffy Fat Chicken Body Suit -->
-        <rect x="12" y="36" width="40" height="24" fill="#fdfcf0" />
-        <rect x="10" y="40" width="44" height="18" fill="#f3eee0" />
-        <!-- Chicken Wings -->
-        <rect x="6" y="42" width="8" height="12" fill="#e5dec9" />
-        <rect x="50" y="42" width="8" height="12" fill="#e5dec9" />
-        <!-- Yellow Feet / Belly Fold -->
-        <rect x="20" y="58" width="10" height="4" fill="#fbb034" />
-        <rect x="34" y="58" width="10" height="4" fill="#fbb034" />
+        <rect x="22" y="18" width="20" height="15" fill="#fbd3b0" />
+
+        <!-- Chunky Dark Nerd Glasses -->
+        <rect x="23" y="20" width="8" height="5" fill="#111111" />
+        <rect x="33" y="20" width="8" height="5" fill="#111111" />
+        <rect x="30" y="22" width="4" height="2" fill="#111111" />
+        <rect x="25" y="21" width="4" height="3" fill="#ffffff" />
+        <rect x="35" y="21" width="4" height="3" fill="#ffffff" />
+        <rect x="27" y="22" width="2" height="2" fill="#000000" />
+        <rect x="37" y="22" width="2" height="2" fill="#000000" />
+
+        <!-- Rosy Cheeks -->
+        <rect x="23" y="25" width="3" height="2" fill="#f09090" />
+        <rect x="38" y="25" width="3" height="2" fill="#f09090" />
+
+        <!-- Smirking Mouth -->
+        <rect x="29" y="26" width="6" height="1" fill="#7d3428" />
+
+        <!-- Iconic Brown Pixel Neckbeard -->
+        <rect x="21" y="28" width="22" height="5" fill="#4a2e18" />
+        <rect x="23" y="32" width="18" height="6" fill="#38210f" />
+        <rect x="26" y="37" width="12" height="4" fill="#291608" />
+
+        <!-- Fat Fluffy Chicken Body Suit -->
+        <rect x="12" y="36" width="40" height="24" fill="#fdfaf0" />
+        <rect x="10" y="40" width="44" height="18" fill="#f3ecdb" />
+        <rect x="14" y="56" width="36" height="6" fill="#e0d6c0" />
+
+        <!-- Flapping Wings -->
+        <g class="mascot-left-wing">
+          <rect x="4" y="38" width="8" height="14" fill="#fdfaf0" />
+          <rect x="2" y="42" width="4" height="10" fill="#ded4bc" />
+        </g>
+        <g class="mascot-right-wing">
+          <rect x="52" y="38" width="8" height="14" fill="#fdfaf0" />
+          <rect x="58" y="42" width="4" height="10" fill="#ded4bc" />
+        </g>
+
+        <!-- Big Yellow Webbed Feet -->
+        <rect x="18" y="58" width="11" height="5" fill="#f9a825" />
+        <rect x="35" y="58" width="11" height="5" fill="#f9a825" />
       </svg>
     </div>
   </div>
 
   <footer>
-    127 COS CHICKEN WARS '26 • CRAFTED WITH RETRO PIXEL PRIDE • HOSTED ON GITHUB PAGES
+    127 COS CHICKEN WARS '26 • CRAFTED WITH RETRO STARDEW VALLEY PRIDE • HOSTED ON GITHUB PAGES
   </footer>
 
-  <!-- Application Modules -->
+  <!-- Modular Scripts -->
   <script src="config.js"></script>
   <script src="audio.js"></script>
   <script src="auth.js"></script>
