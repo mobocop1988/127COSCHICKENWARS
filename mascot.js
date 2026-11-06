@@ -1,51 +1,70 @@
 /**
  * Mascot Module: 8-Bit Neck-Beard Chicken Guy screen peeker
+ * Features immediate initial peek, edge rotation, cluck sound, and manual test trigger.
  */
 const MascotModule = (function () {
   let mascotEl = null;
   let peekTimer = null;
+  let isCurrentlyPeeking = false;
 
   function initMascot() {
     mascotEl = document.getElementById('mascot-chicken-peeker');
-    if (!mascotEl) return;
-    scheduleNextPeek();
+    if (!mascotEl) {
+      console.warn("Mascot element #mascot-chicken-peeker not found.");
+      return;
+    }
+
+    // Fast initial peek after 3 seconds so the user immediately sees it working
+    setTimeout(() => {
+      triggerPeek();
+    }, 3000);
   }
 
   function scheduleNextPeek() {
-    // Random interval between 15 and 35 seconds
-    const interval = Math.floor(Math.random() * 20000) + 15000;
+    if (peekTimer) clearTimeout(peekTimer);
+    // Random interval between 10 and 22 seconds
+    const interval = Math.floor(Math.random() * 12000) + 10000;
     peekTimer = setTimeout(() => {
       triggerPeek();
     }, interval);
   }
 
   function triggerPeek() {
-    if (!mascotEl) return;
+    if (!mascotEl || isCurrentlyPeeking) return;
+    isCurrentlyPeeking = true;
 
-    // Pick random screen edge
-    const positions = ['pos-bottom', 'pos-left', 'pos-right'];
+    // Pick random edge position
+    const positions = ['pos-bottom', 'pos-left', 'pos-right', 'pos-top'];
     const selectedPos = positions[Math.floor(Math.random() * positions.length)];
 
-    mascotEl.classList.remove('pos-bottom', 'pos-left', 'pos-right', 'peek-active');
+    mascotEl.classList.remove('pos-bottom', 'pos-left', 'pos-right', 'pos-top', 'peek-active');
     mascotEl.classList.add(selectedPos);
 
-    // Audio cue
-    AudioModule.playCluck();
+    // Audio cluck accompaniment
+    if (window.AudioModule && typeof AudioModule.playCluck === 'function') {
+      AudioModule.playCluck();
+    }
 
-    // Trigger visual slide in
-    requestAnimationFrame(() => {
+    // Slide in
+    setTimeout(() => {
       mascotEl.classList.add('peek-active');
-    });
+    }, 50);
 
-    // Stay on screen for 2.8 seconds, then retract
+    // Stay visible for 3.2 seconds, then retreat
     setTimeout(() => {
       mascotEl.classList.remove('peek-active');
-      scheduleNextPeek();
-    }, 2800);
+      setTimeout(() => {
+        isCurrentlyPeeking = false;
+        scheduleNextPeek();
+      }, 500);
+    }, 3200);
   }
 
   return {
     init: initMascot,
-    triggerManualPeek: triggerPeek
+    triggerManualPeek: () => {
+      isCurrentlyPeeking = false;
+      triggerPeek();
+    }
   };
 })();
