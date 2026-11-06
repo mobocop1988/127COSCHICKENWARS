@@ -1,79 +1,49 @@
 /**
- * App Module: Bootstrapper, Falling Chicken Strips, Feathers & Secret Easter Egg Engine
+ * app.js
+ * Scenery spawner, falling chicken strips & feathers, golden egg placement, and bootloader
  */
 document.addEventListener('DOMContentLoaded', () => {
 
-  // 1. Randomize Secret Easter Egg Location Across Safe Viewport Zones
-  function placeRandomEasterEgg() {
-    const eggBtn = document.getElementById('secret-easter-egg-btn');
-    if (!eggBtn) return;
-
-    // Define safe spawn spots away from main banners and bracket cards
-    const spots = [
-      { top: '16px', right: '22px' },               // Top right corner
-      { top: '82px', left: '24px' },                // Under jukebox
-      { top: '140px', right: '35px' },              // Upper right edge
-      { bottom: '70px', left: '30px' },             // Lower left above wheat
-      { bottom: '70px', right: '40px' },            // Lower right above wheat
-      { top: '22px', left: 'calc(50% + 280px)' },   // Right of hanging sign
-      { top: '22px', left: 'calc(50% - 320px)' },   // Left of hanging sign
-      { bottom: '65px', left: 'calc(50% - 150px)' } // Hidden in bottom wheat
-    ];
-
-    const chosen = spots[Math.floor(Math.random() * spots.length)];
-
-    // Reset styles and apply randomized coordinates
-    eggBtn.style.top = chosen.top || 'auto';
-    eggBtn.style.bottom = chosen.bottom || 'auto';
-    eggBtn.style.left = chosen.left || 'auto';
-    eggBtn.style.right = chosen.right || 'auto';
-
-    // Slight random rotation for natural farm appearance
-    const randomRot = -15 + Math.floor(Math.random() * 30);
-    eggBtn.style.transform = `rotate(${randomRot}deg)`;
-  }
-
-  try {
-    placeRandomEasterEgg();
-  } catch (err) {
-    console.error("Easter egg placement error:", err);
-  }
-
-  // 2. Initialize Falling 8-Bit Chicken Strips & Big Feathers
-  function initFloatingScenery() {
+  // 1. Spawns falling chicken strips & feathers
+  function initFallingParticles() {
     const container = document.getElementById('feather-canvas-container');
     if (!container) return;
     container.innerHTML = '';
-    const particleCount = 28;
+    const totalCount = 38;
 
-    for (let i = 0; i < particleCount; i++) {
+    for (let i = 0; i < totalCount; i++) {
       const particle = document.createElement('div');
-      // 60% chicken strips, 40% farm feathers
-      const isStrip = (i % 5 !== 0);
-      particle.className = `floating-particle ${isStrip ? 'particle-tender' : 'particle-feather'}`;
+      const isTender = (i % 2 === 0);
+      particle.className = `floating-particle ${isTender ? 'particle-tender' : 'particle-feather'}`;
 
-      // Distribute horizontally across screen width
       particle.style.left = Math.random() * 95 + 'vw';
-
-      // Varied fall speeds (11s to 24s)
-      const duration = 11 + Math.random() * 13;
+      const duration = 12 + Math.random() * 18;
       particle.style.animationDuration = duration + 's';
       particle.style.animationDelay = -(Math.random() * duration) + 's';
 
-      // Generous scale variance for big visual impact
-      const scale = isStrip ? (0.9 + Math.random() * 0.7) : (0.85 + Math.random() * 0.65);
+      const scale = isTender ? (0.7 + Math.random() * 0.5) : (0.6 + Math.random() * 0.7);
       particle.style.transform = `scale(${scale})`;
       container.appendChild(particle);
     }
   }
+  initFallingParticles();
 
-  try {
-    initFloatingScenery();
-  } catch (err) {
-    console.error("Scenery animation error:", err);
+  // 2. Randomizes the location of the secret golden egg easter egg button
+  function randomizeEasterEgg() {
+    const egg = document.getElementById('secret-easter-egg-btn');
+    if (!egg) return;
+
+    // Randomize across visible margins, avoiding header center
+    const isLeft = Math.random() > 0.5;
+    const xPercent = isLeft ? (4 + Math.random() * 22) : (74 + Math.random() * 20);
+    const yPercent = 20 + Math.random() * 62;
+
+    egg.style.left = `${xPercent}vw`;
+    egg.style.top = `${yPercent}vh`;
   }
+  randomizeEasterEgg();
 
-  // 3. Safe Supabase Client Initialization
+  // 3. Initialize Supabase safely
   try {
     if (window.supabase && AppConfig.SUPABASE_URL && !AppConfig.SUPABASE_ANON_KEY.includes('...')) {
       window.supabaseClient = window.supabase.createClient(
@@ -81,34 +51,15 @@ document.addEventListener('DOMContentLoaded', () => {
         AppConfig.SUPABASE_ANON_KEY
       );
     } else {
-      console.warn("Supabase credentials not configured in config.js. Running in demo mode.");
+      console.warn("Configure AppConfig.SUPABASE_URL & ANON_KEY in config.js for cloud persistence.");
     }
-  } catch (e) {
-    console.warn("Supabase client init warning:", e);
+  } catch (err) {
+    console.warn("Supabase init error:", err);
   }
 
-  // 4. Boot Submodules Independently
-  try { AudioModule.init(); } catch (e) { console.error("Audio init error:", e); }
-  try { AuthModule.init(); } catch (e) { console.error("Auth init error:", e); }
-  try { MascotModule.init(); } catch (e) { console.error("Mascot init error:", e); }
-  try { BracketModule.init(); } catch (e) { console.error("Bracket init error:", e); }
-
-  // 5. Supabase Realtime Listener (if online)
-  if (window.supabaseClient) {
-    try {
-      window.supabaseClient
-        .channel('chicken-wars-realtime')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'chicken_wars_votes' }, () => {
-          BracketModule.fetchCloudLeaderboard();
-        })
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'chicken_wars_state' }, (payload) => {
-          if (payload.new && payload.new.state_json) {
-            BracketModule.init();
-          }
-        })
-        .subscribe();
-    } catch (e) {
-      console.warn("Realtime channel subscription error:", e);
-    }
-  }
+  // 4. Boot Subsystems
+  try { AudioModule.init(); } catch (e) { console.error("Audio error:", e); }
+  try { AuthModule.init(); } catch (e) { console.error("Auth error:", e); }
+  try { MascotModule.init(); } catch (e) { console.error("Mascot error:", e); }
+  try { BracketModule.init(); } catch (e) { console.error("Bracket error:", e); }
 });
