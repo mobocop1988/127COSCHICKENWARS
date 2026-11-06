@@ -6,40 +6,39 @@
   <title>Stardew Chicken Wars '26</title>
   <link rel="shortcut icon" type="image/x-icon" href="chicken.ico">
 
-  <!-- Pixelated Retro Fonts -->
+  <!-- Retro Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
-  <!-- Supabase JS Library -->
+  <!-- Supabase JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Custom Stylesheet -->
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- LAYERED ANIMATED STARDEW VALLEY BACKGROUND -->
+  <!-- BACKGROUND SCENERY LAYERS -->
   <div class="sky-gradient-bg"></div>
-
-  <!-- Drifting Pixel Clouds -->
   <div class="cloud-layer cloud-layer-back"></div>
   <div class="cloud-layer cloud-layer-front"></div>
-
-  <!-- Distant Mountain & Rolling Hills Silhouette -->
   <div class="pixel-mountains"></div>
   <div class="pixel-hills"></div>
 
-  <!-- Falling Crispy Chicken Strips & Feathers Canvas -->
+  <!-- Falling Chicken Strips & Feathers Container -->
   <div id="feather-canvas-container"></div>
 
-  <!-- Animated Swaying Golden Wheat Farm Banner -->
+  <!-- Animated Swaying Golden Wheat Bottom Banner -->
   <div class="swaying-wheat-bar">
     <div class="wheat-stalk-layer"></div>
     <div class="wheat-ear-heads"></div>
   </div>
 
-  <!-- RETRO JUKEBOX MUSIC CONSOLE (Top-Left) -->
+  <!-- MASCOT SWARM OVERLAY CONTAINER -->
+  <div id="mascot-swarm-container"></div>
+
+  <!-- RETRO JUKEBOX MUSIC PLAYER (Top-Left) -->
   <div class="retro-jukebox-player">
     <button id="music-toggle-btn" class="jukebox-btn" aria-label="Toggle Barn Music">
       <div class="jukebox-disc-icon">
@@ -59,8 +58,8 @@
     </button>
   </div>
 
-  <!-- SECRET EASTER EGG SUMMON (Randomized Position on load) -->
-  <button id="secret-easter-egg-btn" class="secret-easter-egg" onclick="MascotModule.triggerManualPeek()" aria-label="Mystery Egg">
+  <!-- SECRET GOLDEN EGG EASTER EGG BUTTON (Randomized location on load) -->
+  <button id="secret-easter-egg-btn" class="secret-easter-egg" onclick="MascotModule.triggerSwarm()" aria-label="Secret Egg">
     <svg viewBox="0 0 32 40" width="36" height="46">
       <defs>
         <radialGradient id="eggShine" cx="35%" cy="30%" r="65%">
@@ -70,9 +69,7 @@
           <stop offset="100%" stop-color="#734403"/>
         </radialGradient>
       </defs>
-      <!-- Pixel Golden Egg Silhouette -->
       <path d="M16 2 C7 2, 2 14, 2 24 C2 33, 8 38, 16 38 C24 38, 30 33, 30 24 C30 14, 25 2, 16 2 Z" fill="url(#eggShine)" stroke="#422502" stroke-width="2.5"/>
-      <!-- Farm Speckles -->
       <rect x="9" y="14" width="2" height="2" fill="#754805" opacity="0.6"/>
       <rect x="19" y="11" width="3" height="2" fill="#754805" opacity="0.6"/>
       <rect x="22" y="22" width="2" height="3" fill="#754805" opacity="0.6"/>
@@ -82,7 +79,7 @@
     </svg>
   </button>
 
-  <!-- Header & Stardew Wooden Signboard -->
+  <!-- HEADER & WOODEN SIGNBOARD -->
   <header>
     <div class="wood-sign-board hanging-sign">
       <div class="hanging-chains">
@@ -115,7 +112,7 @@
       </div>
     </div>
 
-    <!-- Champion Banner -->
+    <!-- Champion Announcement Banner -->
     <div id="champion-marquee" class="champion-parchment">
       🏆 SUPREME ROOSTER CHAMPION: <span id="champion-name">TBD</span> 🏆
     </div>
@@ -147,7 +144,7 @@
     </div>
   </div>
 
-  <!-- Tournament Bracket Container -->
+  <!-- TOURNAMENT BRACKET MAIN VIEW -->
   <main id="bracket-super-container">
     <div id="zoomable-bracket-wrapper">
 
@@ -213,7 +210,7 @@
     </div>
   </main>
 
-  <!-- Leaderboard View -->
+  <!-- LEADERBOARD VIEW -->
   <section id="leaderboard-view" class="bracket-container">
     <div class="stardew-panel leaderboard-panel">
       <h2 class="stardew-title">★ TOP CLUCK PREDICTORS // TOWN LEADERBOARD ★</h2>
@@ -240,7 +237,7 @@
 
   <!-- MODALS -->
 
-  <!-- Auth Prompt: Login vs New User Registration -->
+  <!-- Auth Modal -->
   <div id="auth-gate-modal" class="modal-overlay">
     <div class="stardew-dialog-box auth-dialog">
       <div class="dialog-header-badge">STARDEW CHICKEN WARS</div>
@@ -272,7 +269,7 @@
     </div>
   </div>
 
-  <!-- Admin Drawer Modal -->
+  <!-- Admin Control Panel Modal -->
   <div id="admin-overlay" class="modal-overlay">
     <div class="stardew-dialog-box admin-dialog">
       <div class="admin-header">
@@ -280,7 +277,7 @@
         <button class="stardew-btn btn-sm btn-danger" onclick="BracketModule.closeAdmin()">X</button>
       </div>
       <div class="admin-actions-bar">
-        <button class="stardew-btn btn-primary" onclick="BracketModule.advanceCurrentStage()">ADVANCE ROUND >></button>
+        <button class="stardew-btn btn-primary" onclick="BracketModule.advanceCurrentStage()">ADVANCE ROUND &gt;&gt;</button>
         <button class="stardew-btn" onclick="BracketModule.toggleAllBouts(true)">LOCK ALL</button>
         <button class="stardew-btn" onclick="BracketModule.toggleAllBouts(false)">UNLOCK ALL</button>
         <button class="stardew-btn btn-danger" onclick="BracketModule.resetTournamentPrompt()">RESET SEASON</button>
@@ -289,7 +286,7 @@
     </div>
   </div>
 
-  <!-- Admin Verification Modal -->
+  <!-- Admin Passkey Modal -->
   <div id="admin-pass-modal" class="modal-overlay">
     <div class="stardew-dialog-box auth-dialog">
       <h3 class="dialog-title">OPERATOR PASSKEY</h3>
@@ -302,7 +299,7 @@
     </div>
   </div>
 
-  <!-- Vote Switch Confirmation Modal -->
+  <!-- Vote Switch Modal -->
   <div id="confirm-modal" class="modal-overlay">
     <div class="stardew-dialog-box auth-dialog">
       <h3 class="dialog-title">CHANGE YOUR PICK?</h3>
@@ -314,29 +311,20 @@
     </div>
   </div>
 
-  <!-- 8-BIT NECK-BEARD CHICKEN MASCOT PEEKER -->
+  <!-- SINGLE MASCOT PEEKER (Passive edge pop-ups) -->
   <div id="mascot-chicken-peeker" class="mascot-peeker-container">
     <div class="speech-bubble">Bok-bagawk!!!</div>
     <div class="pixel-chicken-man" onclick="MascotModule.triggerManualPeek()">
       <svg class="chicken-man-svg" viewBox="0 0 64 64" shape-rendering="crispEdges">
-        <!-- Hat Rooster Comb -->
         <rect x="26" y="2" width="12" height="4" fill="#cc2b2b" />
         <rect x="24" y="6" width="16" height="4" fill="#e84345" />
         <rect x="28" y="0" width="8" height="3" fill="#ff5c5c" />
-
-        <!-- White Chicken Hood -->
         <rect x="18" y="10" width="28" height="18" fill="#fdfaf0" />
         <rect x="16" y="12" width="32" height="14" fill="#fdfaf0" />
         <rect x="14" y="14" width="36" height="10" fill="#ede5d1" />
-
-        <!-- Forehead Beak -->
         <polygon points="30,11 34,11 32,17" fill="#f9a825" />
         <polygon points="31,11 33,11 32,15" fill="#ffd54f" />
-
-        <!-- Human Face Opening -->
         <rect x="22" y="18" width="20" height="15" fill="#fbd3b0" />
-
-        <!-- Chunky Dark Nerd Glasses -->
         <rect x="23" y="20" width="8" height="5" fill="#111111" />
         <rect x="33" y="20" width="8" height="5" fill="#111111" />
         <rect x="30" y="22" width="4" height="2" fill="#111111" />
@@ -344,25 +332,15 @@
         <rect x="35" y="21" width="4" height="3" fill="#ffffff" />
         <rect x="27" y="22" width="2" height="2" fill="#000000" />
         <rect x="37" y="22" width="2" height="2" fill="#000000" />
-
-        <!-- Rosy Cheeks -->
         <rect x="23" y="25" width="3" height="2" fill="#f09090" />
         <rect x="38" y="25" width="3" height="2" fill="#f09090" />
-
-        <!-- Smirking Mouth -->
         <rect x="29" y="26" width="6" height="1" fill="#7d3428" />
-
-        <!-- Iconic Brown Pixel Neckbeard -->
         <rect x="21" y="28" width="22" height="5" fill="#4a2e18" />
         <rect x="23" y="32" width="18" height="6" fill="#38210f" />
         <rect x="26" y="37" width="12" height="4" fill="#291608" />
-
-        <!-- Fat Fluffy Chicken Body Suit -->
         <rect x="12" y="36" width="40" height="24" fill="#fdfaf0" />
         <rect x="10" y="40" width="44" height="18" fill="#f3ecdb" />
         <rect x="14" y="56" width="36" height="6" fill="#e0d6c0" />
-
-        <!-- Flapping Wings -->
         <g class="mascot-left-wing">
           <rect x="4" y="38" width="8" height="14" fill="#fdfaf0" />
           <rect x="2" y="42" width="4" height="10" fill="#ded4bc" />
@@ -371,8 +349,6 @@
           <rect x="52" y="38" width="8" height="14" fill="#fdfaf0" />
           <rect x="58" y="42" width="4" height="10" fill="#ded4bc" />
         </g>
-
-        <!-- Big Yellow Webbed Feet -->
         <rect x="18" y="58" width="11" height="5" fill="#f9a825" />
         <rect x="35" y="58" width="11" height="5" fill="#f9a825" />
       </svg>
@@ -383,7 +359,7 @@
     127 COS CHICKEN WARS '26 • CRAFTED WITH RETRO STARDEW VALLEY PRIDE • HOSTED ON GITHUB PAGES
   </footer>
 
-  <!-- Scripts directly referenced from root folder -->
+  <!-- Scripts directly in the same folder -->
   <script src="config.js"></script>
   <script src="audio.js"></script>
   <script src="auth.js"></script>
