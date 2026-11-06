@@ -1,17 +1,19 @@
-/* STARDEW VALLEY THEMED RETRO STYLES */
+/* ========================================================
+   STARDEW VALLEY LIVING RETRO THEME & ANIMATIONS
+   ======================================================== */
 :root {
-  --wood-dark: #3b1e08;
+  --wood-dark: #2f1807;
   --wood-mid: #683818;
   --wood-light: #9e5b2b;
-  --wood-border: #401e05;
+  --wood-border: #3d1b02;
   --parchment-bg: #faeed1;
   --parchment-border: #9b7241;
   --parchment-dark: #e8d5a8;
   --stardew-green: #59981a;
-  --stardew-green-dark: #3d6a13;
-  --stardew-gold: #e5a700;
-  --stardew-gold-light: #ffd24d;
-  --stardew-red: #b33939;
+  --stardew-green-dark: #355e10;
+  --stardew-gold: #f4b41a;
+  --stardew-gold-light: #ffe57f;
+  --stardew-red: #c0392b;
   --stardew-blue: #34ace0;
   --text-dark: #3d2314;
   --text-light: #fffdf7;
@@ -26,32 +28,120 @@
 }
 
 body {
-  background-color: #4b692f;
+  background-color: #3f6625;
   color: var(--text-dark);
   font-family: 'Press Start 2P', monospace;
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(#5a7e37 15%, transparent 16%),
-    radial-gradient(#5a7e37 15%, transparent 16%);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
 }
 
-/* Farm Sky Ambient Overlay */
-.farm-sky-overlay {
+/* ========================================================
+   BACKGROUND ENVIRONMENT & WEATHER
+   ======================================================== */
+
+/* Sunny Sky Gradient */
+.sky-gradient-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(180deg, rgba(247, 190, 115, 0.22) 0%, rgba(85, 137, 47, 0.1) 100%);
-  pointer-events: none;
-  z-index: 0;
+  background: linear-gradient(180deg, #6fc3df 0%, #a2d7a7 45%, #5a8a30 75%, #3c621d 100%);
+  z-index: -6;
 }
 
-/* Floating Pixel Feathers Background */
+/* Drifting Pixel Clouds (2 Layers for Parallax Depth) */
+.cloud-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200vw;
+  height: 220px;
+  pointer-events: none;
+  background-repeat: repeat-x;
+  z-index: -5;
+}
+
+.cloud-layer-back {
+  opacity: 0.45;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="60" viewBox="0 0 160 60"><path fill="%23ffffff" d="M30 35h10v-5h10v-5h20v5h10v5h10v10H20V40h10v-5zm70 5h10v-5h15v-5h15v5h10v5h5v10H95V45h5v-5z"/></svg>');
+  background-size: 320px 120px;
+  animation: driftClouds 75s linear infinite;
+}
+
+.cloud-layer-front {
+  opacity: 0.75;
+  top: 25px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="70" viewBox="0 0 220 70"><path fill="%23ffffff" d="M40 30h15v-8h25v-8h30v8h20v8h15v16H30V38h10v-8zm100 12h12v-6h18v-6h16v6h12v6h6v12h-64V48h0z"/></svg>');
+  background-size: 440px 140px;
+  animation: driftClouds 42s linear infinite;
+}
+
+@keyframes driftClouds {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Distant Mountain Silhouettes */
+.pixel-mountains {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 38vh;
+  pointer-events: none;
+  background: 
+    radial-gradient(ellipse at 20% 100%, #2f521b 0%, #2f521b 50%, transparent 51%),
+    radial-gradient(ellipse at 65% 100%, #264714 0%, #264714 55%, transparent 56%),
+    radial-gradient(ellipse at 95% 100%, #1e3b0e 0%, #1e3b0e 52%, transparent 53%);
+  opacity: 0.65;
+  z-index: -4;
+}
+
+.pixel-hills {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 25vh;
+  pointer-events: none;
+  background: 
+    radial-gradient(ellipse at 10% 100%, #4c7728 0%, #4c7728 50%, transparent 52%),
+    radial-gradient(ellipse at 45% 100%, #436e21 0%, #436e21 55%, transparent 57%),
+    radial-gradient(ellipse at 80% 100%, #3a621b 0%, #3a621b 48%, transparent 50%);
+  opacity: 0.9;
+  z-index: -3;
+}
+
+/* Swaying Bottom Wildflower & Grass Trim */
+.swaying-grass-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  height: 28px;
+  background: repeating-linear-gradient(
+    90deg,
+    #2c5011 0px, #2c5011 4px,
+    #4a7e20 4px, #4a7e20 8px,
+    #f4b41a 8px, #f4b41a 10px,
+    #3f7019 10px, #3f7019 16px,
+    #f45d48 16px, #f45d48 18px
+  );
+  border-top: 3px solid #1a3207;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: 0 -4px 8px rgba(0,0,0,0.25);
+  animation: swayGrass 3s ease-in-out infinite alternate;
+}
+
+@keyframes swayGrass {
+  0% { transform: skewX(-1.5deg); }
+  100% { transform: skewX(1.5deg); }
+}
+
+/* Floating Pixel Feathers & Autumn Leaves */
 #feather-canvas-container {
   position: fixed;
   top: 0;
@@ -60,39 +150,67 @@ body {
   height: 100vh;
   pointer-events: none;
   overflow: hidden;
-  z-index: 1;
+  z-index: -1;
 }
 
-.floating-feather {
+.floating-particle {
   position: absolute;
-  width: 20px;
-  height: 20px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFFFFF" d="M11 1c-1 2-2 4-5 6l-3 1 1 2 2-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-2 2-1c0-1-1-2-2-2z"/></svg>');
   background-size: contain;
-  opacity: 0.45;
-  animation: floatFeather linear infinite;
+  background-repeat: no-repeat;
+  animation: fallAndSway linear infinite;
+  pointer-events: none;
 }
 
-@keyframes floatFeather {
-  0% { transform: translateY(105vh) rotate(0deg); opacity: 0; }
-  15% { opacity: 0.6; }
-  85% { opacity: 0.6; }
-  100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+.particle-feather {
+  width: 24px;
+  height: 24px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFFFFF" d="M11 1c-1 2-2 4-5 6l-3 1 1 2 2-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-2 2-1c0-1-1-2-2-2z"/><path fill="%23F4E0A0" d="M10 2c-1 2-2 3-4 5l-2 1 1 1 1-1c-1 2-1 3-1 4l1-1c1-2 2-4 4-5l1-1-1-1 1-1z"/></svg>');
 }
 
-/* Audio Control Ribbon */
-.audio-control-bar {
+.particle-leaf {
+  width: 18px;
+  height: 18px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFA000" d="M8 2c-3 1-5 4-5 7 0 3 2 5 5 5 3 0 5-2 5-5 0-3-2-6-5-7z"/><path fill="%23D32F2F" d="M8 4c-1 1-2 3-2 5 0 2 1 3 2 3s2-1 2-3c0-2-1-4-2-5z"/></svg>');
+}
+
+@keyframes fallAndSway {
+  0% {
+    transform: translateY(-50px) translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% { opacity: 0.8; }
+  50% {
+    transform: translateY(50vh) translateX(45px) rotate(180deg);
+  }
+  90% { opacity: 0.8; }
+  100% {
+    transform: translateY(105vh) translateX(-35px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* ========================================================
+   TOP CONTROLS (MUSIC & MASCOT SUMMON)
+   ======================================================== */
+.top-nav-bar {
   position: fixed;
-  top: 8px;
-  right: 12px;
-  z-index: 900;
+  top: 10px;
+  right: 14px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.audio-control-bar, .mascot-test-bar {
   display: flex;
   align-items: center;
   gap: 8px;
   background: var(--wood-mid);
-  padding: 6px 10px;
+  padding: 6px 12px;
   border: 3px solid var(--wood-border);
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.4);
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
+  border-radius: 2px;
 }
 
 #now-playing-label {
@@ -100,28 +218,76 @@ body {
   color: var(--stardew-gold-light);
 }
 
-/* Header & Stardew Wooden Board */
+.btn-mascot-summon {
+  background: var(--stardew-gold) !important;
+  color: var(--wood-dark) !important;
+  border-color: #8c6600 !important;
+  font-weight: bold;
+}
+
+.btn-mascot-summon:hover {
+  animation: wobbleBtn 0.3s infinite alternate;
+}
+
+@keyframes wobbleBtn {
+  0% { transform: translateY(-2px) rotate(-1deg); }
+  100% { transform: translateY(-2px) rotate(1deg); }
+}
+
+/* ========================================================
+   HEADER & WOODEN SIGNBOARD
+   ======================================================== */
 header {
   text-align: center;
-  padding: 30px 10px 10px 10px;
+  padding: 35px 12px 10px 12px;
   position: relative;
   z-index: 10;
 }
 
 .wood-sign-board {
   display: inline-block;
-  background: var(--wood-mid);
+  background: linear-gradient(180deg, #7a421b 0%, #5a2e12 100%);
   border: 5px solid var(--wood-border);
-  box-shadow: inset 0 0 0 3px var(--wood-light), 4px 5px 0px rgba(0,0,0,0.5);
-  padding: 18px 30px;
+  box-shadow: 
+    inset 0 0 0 3px #9e5b2b,
+    inset 0 0 16px rgba(0,0,0,0.6),
+    5px 6px 0px rgba(0,0,0,0.45);
+  padding: 18px 36px;
   margin-bottom: 15px;
   border-radius: 4px;
+  position: relative;
 }
 
+/* Stardew hanging chains */
+.hanging-sign {
+  animation: gentleSway 5s ease-in-out infinite alternate;
+  transform-origin: top center;
+}
+
+@keyframes gentleSway {
+  0% { transform: rotate(-0.8deg); }
+  100% { transform: rotate(0.8deg); }
+}
+
+.hanging-chains .chain {
+  position: absolute;
+  top: -24px;
+  width: 6px;
+  height: 24px;
+  background: repeating-linear-gradient(180deg, #444 0, #444 4px, #777 4px, #777 8px);
+  border: 1px solid #111;
+}
+.hanging-chains .chain.left { left: 40px; }
+.hanging-chains .chain.right { right: 40px; }
+
 .title-main {
-  font-size: 1.8rem;
+  font-size: 1.9rem;
   color: var(--stardew-gold-light);
-  text-shadow: 3px 3px 0px var(--wood-dark);
+  text-shadow: 
+    3px 3px 0px var(--wood-dark),
+    -1px -1px 0px var(--wood-dark),
+    1px -1px 0px var(--wood-dark),
+    -1px 1px 0px var(--wood-dark);
   letter-spacing: 2px;
 }
 
@@ -136,7 +302,7 @@ header {
 .scoreboard-wood {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   margin: 12px auto;
   flex-wrap: wrap;
   max-width: 1100px;
@@ -147,9 +313,14 @@ header {
   border: 3px solid var(--parchment-border);
   box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
   padding: 8px 14px;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: bold;
   color: var(--text-dark);
+  transition: transform 0.1s ease;
+}
+
+.score-pill:hover {
+  transform: translateY(-2px);
 }
 
 .score-pill span.val {
@@ -162,19 +333,11 @@ header {
   border-color: var(--stardew-gold);
 }
 
-#profile-pill:hover {
-  filter: brightness(1.08);
-}
-
 .cloud-status-badge.cloud-online {
   color: var(--stardew-green-dark);
 }
 
-.cloud-status-badge.cloud-offline {
-  color: var(--stardew-red);
-}
-
-/* Champion Parchment */
+/* Champion Banner */
 .champion-parchment {
   display: none;
   background: var(--stardew-gold);
@@ -194,7 +357,9 @@ header {
   50% { transform: scale(1.02); }
 }
 
-/* Navigation Tabs */
+/* ========================================================
+   NAVIGATION BUTTONS (STARDEW DIALOGUE BUTTONS)
+   ======================================================== */
 .nav-tabs {
   display: flex;
   justify-content: center;
@@ -219,12 +384,19 @@ header {
 .tab-btn:hover, .stardew-btn:hover {
   background: #fff8e8;
   transform: translateY(-2px);
+  box-shadow: 3px 5px 0px rgba(0,0,0,0.45);
+}
+
+.tab-btn:active, .stardew-btn:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.4);
 }
 
 .tab-btn.active {
   background: var(--stardew-green);
   color: #fff;
   border-color: var(--stardew-green-dark);
+  box-shadow: inset 2px 2px 0px rgba(0,0,0,0.2), 3px 3px 0px rgba(0,0,0,0.4);
 }
 
 .btn-sm {
@@ -282,7 +454,6 @@ header {
 }
 
 .toolbar-link {
-  color: #fff;
   font-size: 0.6rem;
   text-decoration: none;
   border: 2px solid var(--parchment-border);
@@ -291,15 +462,17 @@ header {
   color: var(--text-dark);
 }
 
-/* Bracket Section Containers */
+/* Section Title Ribbons */
 .section-divider-title {
   display: none;
-  padding: 10px 16px;
-  margin: 30px 20px 12px 20px;
+  padding: 12px 18px;
+  margin: 30px 20px 14px 20px;
   background: var(--wood-mid);
-  border: 3px solid var(--wood-border);
+  border: 4px solid var(--wood-border);
   color: var(--stardew-gold-light);
   font-size: 0.85rem;
+  text-shadow: 2px 2px 0px #000;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.35);
 }
 
 #bracket-super-container {
@@ -316,7 +489,7 @@ header {
 
 .bracket-container {
   display: none;
-  padding: 15px 25px 60px 25px;
+  padding: 15px 25px 80px 25px;
   overflow-x: auto;
   width: 100%;
 }
@@ -343,12 +516,13 @@ header {
 .round-header {
   text-align: center;
   padding: 10px;
-  background: var(--wood-mid);
+  background: linear-gradient(180deg, #7a421b 0%, #5a2e12 100%);
   border: 3px solid var(--wood-border);
   color: var(--stardew-gold-light);
   font-size: 0.75rem;
   box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
   margin-bottom: 20px;
+  text-shadow: 2px 2px 0px var(--wood-dark);
 }
 
 .bouts-list {
@@ -367,6 +541,12 @@ header {
   padding: 10px;
   position: relative;
   border-radius: 4px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.bout-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 4px 6px 0px rgba(0,0,0,0.4);
 }
 
 .bout-card.locked-bout {
@@ -403,6 +583,12 @@ header {
   color: #fff;
   padding: 2px 5px;
   font-size: 0.5rem;
+  animation: blinkOpen 1.5s infinite;
+}
+
+@keyframes blinkOpen {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 
 .points-awarded-badge {
@@ -419,6 +605,7 @@ header {
   margin: 4px 0;
   background: #f7e7c4;
   border: 2px solid var(--parchment-border);
+  transition: background 0.15s;
 }
 
 .team-slot.winner-slot {
@@ -471,10 +658,12 @@ header {
   padding: 6px 10px;
   cursor: pointer;
   box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+  transition: transform 0.08s;
 }
 
 .vote-btn:hover:not(:disabled) {
   filter: brightness(1.15);
+  transform: scale(1.05);
 }
 
 .vote-btn:disabled {
@@ -504,7 +693,7 @@ header {
   margin: 25px auto;
 }
 
-/* Stardew Leaderboard & Panels */
+/* Leaderboard */
 .stardew-panel {
   max-width: 860px;
   margin: 20px auto 40px auto;
@@ -566,7 +755,7 @@ header {
   border-left: 4px solid var(--stardew-green-dark);
 }
 
-/* Modals & Dialog Boxes */
+/* Modals */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -702,71 +891,113 @@ header {
   font-size: 0.6rem;
 }
 
-/* 8-BIT NECK-BEARD CHICKEN MASCOT ANIMATION */
+/* ========================================================
+   8-BIT NECK-BEARD CHICKEN MASCOT ANIMATIONS
+   ======================================================== */
 .mascot-peeker-container {
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
   display: flex;
   flex-direction: column;
   align-items: center;
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   opacity: 0;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+  transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s;
 }
 
 .pixel-chicken-man {
-  width: 110px;
-  height: 110px;
+  width: 140px;
+  height: 140px;
+  position: relative;
+  filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.45));
 }
 
 .chicken-man-svg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(3px 3px 0px rgba(0,0,0,0.5));
 }
 
+/* Wing Flap Keyframes on Mascot Peeking */
+.mascot-peeker-container.peek-active .mascot-left-wing {
+  animation: flapLeft 0.22s infinite alternate ease-in-out;
+  transform-origin: 12px 42px;
+}
+.mascot-peeker-container.peek-active .mascot-right-wing {
+  animation: flapRight 0.22s infinite alternate ease-in-out;
+  transform-origin: 52px 42px;
+}
+
+@keyframes flapLeft {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(-28deg); }
+}
+
+@keyframes flapRight {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(28deg); }
+}
+
+/* Comic Speech Bubble */
 .speech-bubble {
   background: #ffffff;
-  border: 3px solid #000;
-  padding: 6px 12px;
+  border: 4px solid #000000;
+  padding: 8px 14px;
   font-family: 'Press Start 2P', monospace;
-  font-size: 0.65rem;
-  color: #000;
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.3);
-  margin-bottom: 6px;
+  font-size: 0.72rem;
+  color: #c0392b;
+  font-weight: bold;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.35);
+  margin-bottom: 8px;
   border-radius: 6px;
   white-space: nowrap;
+  animation: bubbleHop 0.4s infinite alternate ease-in-out;
+}
+
+@keyframes bubbleHop {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-4px); }
 }
 
 /* Mascot Edge Positions */
 .mascot-peeker-container.pos-bottom {
   bottom: 0;
   left: 50%;
-  transform: translate(-50%, 120%);
+  transform: translate(-50%, 130%);
 }
 .mascot-peeker-container.pos-bottom.peek-active {
   opacity: 1;
-  transform: translate(-50%, 0%);
+  transform: translate(-50%, -10px);
 }
 
 .mascot-peeker-container.pos-left {
   top: 50%;
   left: 0;
-  transform: translate(-120%, -50%) rotate(90deg);
+  transform: translate(-130%, -50%);
 }
 .mascot-peeker-container.pos-left.peek-active {
   opacity: 1;
-  transform: translate(0%, -50%) rotate(0deg);
+  transform: translate(15px, -50%);
 }
 
 .mascot-peeker-container.pos-right {
   top: 50%;
   right: 0;
-  transform: translate(120%, -50%);
+  transform: translate(130%, -50%);
 }
 .mascot-peeker-container.pos-right.peek-active {
   opacity: 1;
-  transform: translate(0%, -50%);
+  transform: translate(-15px, -50%);
+}
+
+.mascot-peeker-container.pos-top {
+  top: 0;
+  left: 45%;
+  transform: translate(-50%, -130%);
+}
+.mascot-peeker-container.pos-top.peek-active {
+  opacity: 1;
+  transform: translate(-50%, 15px);
 }
 
 footer {
