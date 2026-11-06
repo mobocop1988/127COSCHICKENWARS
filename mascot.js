@@ -1,174 +1,147 @@
 /**
- * mascot.js
- * 8-bit neck-beard chicken mascot with passive peeks, 5-second swarm, and 10-second auto-clear
+ * mascot.js - 8-Bit Chicken Guy Mascot (Peeker, Easter Egg Randomizer & 5s Swarm Breakout)
  */
-const MascotModule = (() => {
+const MascotModule = (function () {
   let isPeeking = false;
   let peekTimer = null;
+  let isSwarming = false;
   let swarmInterval = null;
-  let swarmClearTimeout = null;
+  let swarmCleanupTimer = null;
 
-  function init() {
-    // Immediate introduction peek 3 seconds after load
+  const PHRASES = [
+    "Bok-bagawk!!!",
+    "Bok BOK BOK!",
+    "BA-GAWWWK!!",
+    "Cluck cluck, baby!",
+    "BOK-A-DOODLE-DOO!"
+  ];
+
+  function positionEasterEgg() {
+    const egg = document.getElementById('secret-easter-egg-btn');
+    if (!egg) return;
+
+    const minX = 70;
+    const maxX = window.innerWidth - 80;
+    const minY = 80;
+    const maxY = window.innerHeight - 100;
+
+    const randX = Math.floor(minX + Math.random() * (maxX - minX));
+    const randY = Math.floor(minY + Math.random() * (maxY - minY));
+
+    egg.style.left = randX + 'px';
+    egg.style.top = randY + 'px';
+  }
+
+  function triggerPeek() {
+    if (isPeeking || isSwarming) return;
+    const mascot = document.getElementById('mascot-container');
+    const bubble = document.getElementById('mascot-bubble');
+    if (!mascot || !bubble) return;
+
+    bubble.innerText = PHRASES[Math.floor(Math.random() * PHRASES.length)];
+
+    const randomRight = 20 + Math.random() * (window.innerWidth - 220);
+    mascot.style.right = `${randomRight}px`;
+
+    isPeeking = true;
+    mascot.classList.add('mascot-peeking');
+    AudioModule.sfxChickenCluck();
+
     setTimeout(() => {
-      triggerManualPeek();
-    }, 3000);
-
-    // Schedule regular passive peeks
-    scheduleNextPeek();
+      mascot.classList.remove('mascot-peeking');
+      isPeeking = false;
+      scheduleNextPeek();
+    }, 2800);
   }
 
   function scheduleNextPeek() {
     clearTimeout(peekTimer);
-    const delay = 12000 + Math.random() * 16000; // 12-28 seconds
-    peekTimer = setTimeout(() => {
-      triggerRandomPeek();
-      scheduleNextPeek();
-    }, delay);
+    const delay = 10000 + Math.random() * 14000;
+    peekTimer = setTimeout(triggerPeek, delay);
   }
 
-  function triggerRandomPeek() {
-    if (isPeeking) return;
-    const peeker = document.getElementById('mascot-chicken-peeker');
-    if (!peeker) return;
-
-    peeker.classList.remove('peek-bottom', 'peek-left', 'peek-right');
-    const positions = ['peek-bottom', 'peek-left', 'peek-right'];
-    const chosen = positions[Math.floor(Math.random() * positions.length)];
-    peeker.classList.add(chosen);
-
-    isPeeking = true;
-    peeker.classList.add('show');
-    AudioModule.playCluck();
-
-    setTimeout(() => {
-      peeker.classList.remove('show');
-      setTimeout(() => { isPeeking = false; }, 500);
-    }, 2800);
-  }
-
-  function triggerManualPeek() {
-    triggerRandomPeek();
-  }
-
-  /**
-   * 5-SECOND SCREEN SWARM & 10-SECOND AUTO-CLEAR
-   * Continuously spawns clucking chickens over 5 seconds.
-   * At 10 seconds from initiation, triggers panic scramble exit and clears all.
-   */
   function triggerSwarm() {
-    const container = document.getElementById('mascot-swarm-container');
-    if (!container) return;
+    if (isSwarming) return;
+    isSwarming = true;
 
-    // Clear any previous active swarm run
-    if (swarmInterval) clearInterval(swarmInterval);
-    if (swarmClearTimeout) clearTimeout(swarmClearTimeout);
+    const swarmContainer = document.getElementById('mascot-swarm-container');
+    if (!swarmContainer) return;
 
-    AudioModule.playCluck();
+    swarmContainer.innerHTML = '';
+    AudioModule.sfxFanfare();
 
-    const startTime = Date.now();
-    let cluckThrottle = 0;
+    let cluckCounter = 0;
+    const swarmStartTime = Date.now();
+    const SWARM_SPAWN_DURATION = 5000;
 
-    // Spawn chickens continuously across the screen over 5 seconds
     swarmInterval = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      if (elapsed >= 5000) {
+      if (Date.now() - swarmStartTime >= SWARM_SPAWN_DURATION) {
         clearInterval(swarmInterval);
-        swarmInterval = null;
         return;
       }
-
-      spawnSwarmChicken(container);
-
-      // Play cluck sound periodically
-      cluckThrottle++;
-      if (cluckThrottle % 3 === 0) {
-        AudioModule.playCluck();
+      spawnSingleSwarmChicken(swarmContainer);
+      cluckCounter++;
+      if (cluckCounter % 3 === 0) {
+        AudioModule.sfxChickenCluck();
       }
-    }, 130);
+    }, 180);
 
-    // Auto-clear exactly 10 seconds after initiation
-    swarmClearTimeout = setTimeout(() => {
-      const allSwarmers = container.querySelectorAll('.swarm-chicken-unit');
-      allSwarmers.forEach(ch => {
-        ch.classList.add('swarm-scramble-exit');
-      });
+    clearTimeout(swarmCleanupTimer);
+    swarmCleanupTimer = setTimeout(() => {
+      const units = swarmContainer.querySelectorAll('.swarm-chicken-unit');
+      units.forEach(u => u.classList.add('swarm-scramble-exit'));
 
-      // Completely remove from DOM after the exit scramble finishes
       setTimeout(() => {
-        container.innerHTML = '';
-      }, 1200);
+        swarmContainer.innerHTML = '';
+        isSwarming = false;
+        scheduleNextPeek();
+      }, 700);
     }, 10000);
   }
 
-  function spawnSwarmChicken(container) {
+  function spawnSingleSwarmChicken(container) {
     const unit = document.createElement('div');
     unit.className = 'swarm-chicken-unit';
 
-    const x = Math.random() * (window.innerWidth - 130);
-    const y = Math.random() * (window.innerHeight - 130);
-    const scale = 0.65 + Math.random() * 0.75;
+    const randX = Math.floor(Math.random() * (window.innerWidth - 100));
+    const randY = Math.floor(Math.random() * (window.innerHeight - 120));
+    unit.style.left = randX + 'px';
+    unit.style.top = randY + 'px';
 
-    unit.style.left = `${Math.max(10, x)}px`;
-    unit.style.top = `${Math.max(10, y)}px`;
+    const scale = 0.55 + Math.random() * 0.75;
     unit.style.transform = `scale(${scale})`;
 
-    const sayings = ["Bok-bagawk!!!", "CLUCK!", "BOK BOK!", "BA-GAWK!"];
-    const phrase = sayings[Math.floor(Math.random() * sayings.length)];
+    const phrase = PHRASES[Math.floor(Math.random() * PHRASES.length)];
 
     unit.innerHTML = `
-      <div class="swarm-speech-bubble">${phrase}</div>
-      <svg class="chicken-man-svg" viewBox="0 0 64 64" width="105" height="105" shape-rendering="crispEdges">
-        <rect x="26" y="2" width="12" height="4" fill="#cc2b2b" />
-        <rect x="24" y="6" width="16" height="4" fill="#e84345" />
-        <rect x="28" y="0" width="8" height="3" fill="#ff5c5c" />
-        <rect x="18" y="10" width="28" height="18" fill="#fdfaf0" />
-        <rect x="16" y="12" width="32" height="14" fill="#fdfaf0" />
-        <rect x="14" y="14" width="36" height="10" fill="#ede5d1" />
-        <polygon points="30,11 34,11 32,17" fill="#f9a825" />
-        <polygon points="31,11 33,11 32,15" fill="#ffd54f" />
-        <rect x="22" y="18" width="20" height="15" fill="#fbd3b0" />
-        <rect x="23" y="20" width="8" height="5" fill="#111111" />
-        <rect x="33" y="20" width="8" height="5" fill="#111111" />
-        <rect x="30" y="22" width="4" height="2" fill="#111111" />
-        <rect x="25" y="21" width="4" height="3" fill="#ffffff" />
-        <rect x="35" y="21" width="4" height="3" fill="#ffffff" />
-        <rect x="27" y="22" width="2" height="2" fill="#000000" />
-        <rect x="37" y="22" width="2" height="2" fill="#000000" />
-        <rect x="23" y="25" width="3" height="2" fill="#f09090" />
-        <rect x="38" y="25" width="3" height="2" fill="#f09090" />
-        <rect x="29" y="26" width="6" height="1" fill="#7d3428" />
-        <rect x="21" y="28" width="22" height="5" fill="#4a2e18" />
-        <rect x="23" y="32" width="18" height="6" fill="#38210f" />
-        <rect x="26" y="37" width="12" height="4" fill="#291608" />
-        <rect x="12" y="36" width="40" height="24" fill="#fdfaf0" />
-        <rect x="10" y="40" width="44" height="18" fill="#f3ecdb" />
-        <rect x="14" y="56" width="36" height="6" fill="#e0d6c0" />
-        <g class="mascot-left-wing">
-          <rect x="4" y="38" width="8" height="14" fill="#fdfaf0" />
-          <rect x="2" y="42" width="4" height="10" fill="#ded4bc" />
-        </g>
-        <g class="mascot-right-wing">
-          <rect x="52" y="38" width="8" height="14" fill="#fdfaf0" />
-          <rect x="58" y="42" width="4" height="10" fill="#ded4bc" />
-        </g>
-        <rect x="18" y="58" width="11" height="5" fill="#f9a825" />
-        <rect x="35" y="58" width="11" height="5" fill="#f9a825" />
+      <div class="swarm-bubble">${phrase}</div>
+      <svg viewBox="0 0 96 96" width="75" height="75" style="image-rendering: pixelated;">
+        <rect x="22" y="26" width="52" height="52" rx="20" fill="#fdf0d5" stroke="#2c1a0e" stroke-width="4"/>
+        <path d="M 40 18 Q 48 10 56 18 Q 48 24 40 18 Z" fill="#d9383a" stroke="#2c1a0e" stroke-width="3"/>
+        <path d="M 36 34 Q 48 26 60 34 Q 48 44 36 34 Z" fill="#ef8354" stroke="#2c1a0e" stroke-width="3"/>
+        <rect x="36" y="40" width="24" height="14" fill="#ffcca0"/>
+        <rect x="38" y="42" width="4" height="4" fill="#000"/>
+        <rect x="54" y="42" width="4" height="4" fill="#000"/>
+        <polygon points="48,46 43,53 53,53" fill="#f39a3e" stroke="#2c1a0e" stroke-width="2"/>
+        <path d="M 33 46 Q 33 60 48 64 Q 63 60 63 46 Z" fill="#583119" stroke="#2c1a0e" stroke-width="3"/>
+        <ellipse cx="18" cy="50" rx="10" ry="16" fill="#f4d06f" stroke="#2c1a0e" stroke-width="3" transform="rotate(-15 18 50)"/>
+        <ellipse cx="78" cy="50" rx="10" ry="16" fill="#f4d06f" stroke="#2c1a0e" stroke-width="3" transform="rotate(15 78 50)"/>
       </svg>
     `;
-
-    unit.addEventListener('click', () => {
-      AudioModule.playCluck();
-      unit.style.transform += ' rotate(20deg) scale(1.1)';
-    });
 
     container.appendChild(unit);
   }
 
+  function init() {
+    positionEasterEgg();
+    window.addEventListener('resize', positionEasterEgg);
+    setTimeout(triggerPeek, 3000);
+  }
+
   return {
     init,
-    triggerRandomPeek,
-    triggerManualPeek,
-    triggerSwarm
+    triggerPeek,
+    triggerSwarm,
+    repositionEasterEgg: positionEasterEgg
   };
 })();
