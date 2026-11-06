@@ -1,6 +1,6 @@
 /**
  * auth.js
- * First-access prompt, last-name username registration, and Supabase integration
+ * First-access prompt, last-name username registration, case-insensitive passwords, and Supabase integration
  */
 const AuthModule = (() => {
   let authMode = 'choice'; // 'choice' | 'login' | 'register'
@@ -71,7 +71,9 @@ const AuthModule = (() => {
     errorEl.innerText = '';
 
     const rawName = document.getElementById('auth-username').value.trim();
-    const rawPass = document.getElementById('auth-password').value;
+    // CASE-INSENSITIVE USER PASSWORD:
+    // Convert to lowercase and trim spaces so casing never causes login issues
+    const rawPass = (document.getElementById('auth-password').value || '').trim().toLowerCase();
 
     const lastName = rawName.toUpperCase().replace(/[^A-Z0-9\-\'\s]/g, '').trim();
     if (!lastName) {
@@ -79,24 +81,39 @@ const AuthModule = (() => {
       return;
     }
 
+    if (!rawPass || rawPass.length < 4) {
+      errorEl.innerText = "Password must be at least 4 characters.";
+      return;
+    }
+
     const passHash = await sha256(rawPass + "_CW26_SALT");
     const userHash = await sha256(lastName + "_CW26_USER");
 
+    if (!window.supabaseClient) {
+      errorEl.innerText = "Database offline. Check Supabase URL & Key in config.js.";
+      return;
+    }
+
     if (authMode === 'register') {
-      // Check if user already exists
-      const { data: existing } = await window.supabaseClient
+      // 1. Check if user already exists
+      const { data: existing, error: checkError } = await window.supabaseClient
         .from('chicken_wars_users')
         .select('id')
         .eq('last_name', lastName)
         .maybeSingle();
+
+      if (checkError) {
+        errorEl.innerText = "Registration query error: " + checkError.message;
+        return;
+      }
 
       if (existing) {
         errorEl.innerText = "This last name is already registered. Please choose Login.";
         return;
       }
 
-      // Create user
-      const { error } = await window.supabaseClient
+      // 2. Create user record
+      const { error: insertError } = await window.supabaseClient
         .from('chicken_wars_users')
         .insert([{
           last_name: lastName,
@@ -104,12 +121,12 @@ const AuthModule = (() => {
           user_hash: userHash
         }]);
 
-      if (error) {
-        errorEl.innerText = "Registration error: " + error.message;
+      if (insertError) {
+        errorEl.innerText = "Registration error: " + insertError.message;
         return;
       }
 
-      // Initialize score
+      // 3. Initialize user score row
       await window.supabaseClient
         .from('chicken_wars_scores')
         .insert([{
