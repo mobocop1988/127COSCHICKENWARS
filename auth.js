@@ -1,200 +1,218 @@
 /**
- * auth.js
- * First-access prompt, username registration matching chicken_wars_users columns:
- * (id, username, password_hash, created_at, last_login)
+ * auth.js - User Registration & Login Module
+ * Case-insensitive password support, Supabase schema alignment, and exported sha256
  */
-const AuthModule = (() => {
-  let authMode = 'choice'; // 'choice' | 'login' | 'register'
-  const STORAGE_USER_KEY = 'CW26_FARMER_LAST_NAME';
-  const STORAGE_HASH_KEY = 'CW26_FARMER_USER_HASH';
-
-  function init() {
-    const savedName = localStorage.getItem(STORAGE_USER_KEY);
-    if (!savedName) {
-      promptAuthModal();
-    } else {
-      updateFarmerDisplay(savedName);
-    }
-  }
-
-  function promptAuthModal() {
-    resetToChoice();
-    document.getElementById('auth-gate-modal').style.display = 'flex';
-  }
-
-  function promptSwitchUser() {
-    promptAuthModal();
-  }
-
-  function resetToChoice() {
-    authMode = 'choice';
-    document.getElementById('auth-step-choice').style.display = 'flex';
-    document.getElementById('auth-form').style.display = 'none';
-    document.getElementById('auth-title').innerText = "WELCOME TO THE COOP!";
-    document.getElementById('auth-message').innerText = "Are you a returning Farmer or setting up a new coop?";
-    document.getElementById('auth-error-msg').innerText = '';
-    document.getElementById('auth-username').value = '';
-    document.getElementById('auth-password').value = '';
-  }
-
-  function setAuthMode(mode) {
-    authMode = mode;
-    document.getElementById('auth-step-choice').style.display = 'none';
-    document.getElementById('auth-form').style.display = 'block';
-    document.getElementById('auth-error-msg').innerText = '';
-
-    if (mode === 'login') {
-      document.getElementById('auth-title').innerText = "FARMER LOGIN";
-      document.getElementById('auth-message').innerText = "Enter your LAST NAME (Username) and password.";
-      document.getElementById('auth-action-submit').innerText = "LOGIN";
-    } else {
-      document.getElementById('auth-title').innerText = "REGISTER COOP BALLOT";
-      document.getElementById('auth-message').innerText = "Create an account with your LAST NAME and a password.";
-      document.getElementById('auth-action-submit').innerText = "REGISTER";
-    }
-    document.getElementById('auth-username').focus();
-  }
+const AuthModule = (function () {
+  let authMode = 'login';
 
   async function sha256(str) {
     try {
-      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-    } catch(e) {
-      let h = 0;
-      for (let i = 0; i < str.length; i++) h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
-      return String(h);
+      if (window.crypto && crypto.subtle) {
+        const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+    } catch (e) {}
+    let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+    for (let i = 0; i < str.length; i++) {
+      const ch = str.charCodeAt(i);
+      h1 = Math.imul(h1 ^ ch, 2654435761);
+      h2 = Math.imul(h2 ^ ch, 1597334677);
     }
+    h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+    h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+    return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16).padStart(16, '0');
   }
 
-  async function handleAuthSubmit(e) {
-    e.preventDefault();
-    const errorEl = document.getElementById('auth-error-msg');
-    errorEl.innerText = '';
+  async function getDeterministicUserHash(username) {
+    const clean = (username || '').trim().toUpperCase();
+    return await sha256(`CW26_USER_${clean}`);
+  }
 
-    const rawName = document.getElementById('auth-username').value.trim();
-    // CASE-INSENSITIVE USER PASSWORD:
-    // Standardize to lowercase and trim spaces before hashing
-    const rawPass = (document.getElementById('auth-password').value || '').trim().toLowerCase();
+  function promptAuthModal(mode = 'login') {
+    switchMode(mode);
+    document.getElementById('auth-username').value = localStorage.getItem(AppConfig.STORAGE_KEYS.PLAYER_NAME) || '';
+    document.getElementById('auth-password').value = '';
+    document.getElementById('auth-error-msg').style.display = 'none';
+    document.getElementById('auth-modal').style.display = 'flex';
+    setTimeout(() => document.getElementById('auth-username').focus(), 60);
+  }
 
-    const username = rawName.toUpperCase().replace(/[^A-Z0-9\-\'\s]/g, '').trim();
-    if (!username) {
-      errorEl.innerText = "Please enter a valid last name / username.";
+  function closeAuthModal() {
+    document.getElementById('auth-modal').style.display = 'none';
+  }
+
+  function switchMode(mode) {
+    authMode = mode;
+    const isLogin = mode === 'login';
+    document.getElementById('auth-title').innerText = isLogin ? 'PELICAN TOWN FARM REGISTRY' : 'CREATE NEW FARMER ACCOUNT';
+    document.getElementById('auth-subtitle').innerText = isLogin 
+      ? 'Enter your username and password to log in.' 
+      : 'Register your username and password to track predictions!';
+    document.getElementById('tab-mode-login').classList.toggle('active', isLogin);
+    document.getElementById('tab-mode-register').classList.toggle('active', !isLogin);
+    document.getElementById('auth-submit-btn').innerText = isLogin ? 'SIGN IN' : 'REGISTER FARMER';
+    document.getElementById('auth-error-msg').style.display = 'none';
+  }
+
+  async function handleAuthSubmit() {
+    const usernameInput = document.getElementById('auth-username').value.trim();
+    const rawPass = document.getElementById('auth-password').value.trim();
+    const errElem = document.getElementById('auth-error-msg');
+
+    if (!usernameInput) {
+      showError("Please enter your username.");
       return;
     }
 
-    if (!rawPass || rawPass.length < 4) {
-      errorEl.innerText = "Password must be at least 4 characters.";
+    const cleanUsername = usernameInput.toUpperCase().replace(/[^A-Z0-9\-_'\s]/g, '').trim();
+    if (cleanUsername.length < 2) {
+      showError("Username must be at least 2 characters.");
       return;
     }
 
-    const passHash = await sha256(rawPass + "_CW26_SALT");
-    const userHash = await sha256(username + "_CW26_USER");
-
-    if (!window.supabaseClient) {
-      errorEl.innerText = "Database offline. Check Supabase URL & Key in config.js.";
+    if (!rawPass || rawPass.length < 3) {
+      showError("Password must be at least 3 characters.");
       return;
     }
+
+    // Password is case-insensitive
+    const caseInsensitivePass = rawPass.toLowerCase();
+    const passwordHash = await sha256(`CW26_PASS_${cleanUsername}_${caseInsensitivePass}`);
+    const userHash = await getDeterministicUserHash(cleanUsername);
 
     if (authMode === 'register') {
-      // 1. Check if username already exists in chicken_wars_users
-      const { data: existing, error: checkError } = await window.supabaseClient
-        .from('chicken_wars_users')
-        .select('id')
-        .eq('username', username)
-        .maybeSingle();
-
-      if (checkError) {
-        errorEl.innerText = "Registration query error: " + checkError.message;
+      const checkRes = await executeSupabaseRest(`chicken_wars_users?username=eq.${encodeURIComponent(cleanUsername)}&select=id`);
+      if (checkRes.success && Array.isArray(checkRes.data) && checkRes.data.length > 0) {
+        showError("That username is already taken! Please choose another or login.");
         return;
       }
 
-      if (existing) {
-        errorEl.innerText = "This username is already registered. Please click 'BACK' and choose Login.";
+      const createRes = await executeSupabaseRest('chicken_wars_users', 'POST', {
+        username: cleanUsername,
+        password_hash: passwordHash,
+        last_login: new Date().toISOString()
+      });
+
+      if (!createRes.success) {
+        showError(`Registration Error: ${createRes.error || 'Database unavailable'}`);
         return;
       }
 
-      // 2. Insert into chicken_wars_users matching schema:
-      // (username, password_hash, last_login)
-      const nowIso = new Date().toISOString();
-      const { error: insertError } = await window.supabaseClient
-        .from('chicken_wars_users')
-        .insert([{
-          username: username,
-          password_hash: passHash,
-          last_login: nowIso
-        }]);
+      await executeSupabaseRest('chicken_wars_scores', 'POST', {
+        user_hash: userHash,
+        player_name: cleanUsername,
+        score: 0,
+        correct_picks: 0,
+        last_active_date: getTodayDateString(),
+        updated_at: new Date().toISOString()
+      });
 
-      if (insertError) {
-        errorEl.innerText = "Registration error: " + insertError.message;
+      finalizeLogin(cleanUsername, userHash);
+
+    } else {
+      const userRes = await executeSupabaseRest(`chicken_wars_users?username=eq.${encodeURIComponent(cleanUsername)}&select=*`);
+      if (!userRes.success || !Array.isArray(userRes.data) || userRes.data.length === 0) {
+        showError("Farmer not found. Please click 'NEW FARMER' to register!");
         return;
       }
 
-      // 3. Initialize user score row
-      await window.supabaseClient
-        .from('chicken_wars_scores')
-        .upsert([{
-          user_hash: userHash,
-          player_name: username,
-          score: 0,
-          correct_picks: 0
-        }], { onConflict: 'user_hash' });
-
-      completeAuth(username, userHash);
-
-    } else if (authMode === 'login') {
-      // Authenticate against chicken_wars_users
-      const { data: user, error } = await window.supabaseClient
-        .from('chicken_wars_users')
-        .select('*')
-        .eq('username', username)
-        .eq('password_hash', passHash)
-        .maybeSingle();
-
-      if (error || !user) {
-        errorEl.innerText = "Invalid username or password.";
+      const user = userRes.data[0];
+      if (user.password_hash !== passwordHash) {
+        showError("Incorrect password! Please try again.");
         return;
       }
 
-      // Update last_login timestamp
-      await window.supabaseClient
-        .from('chicken_wars_users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', user.id);
+      await executeSupabaseRest(`chicken_wars_users?username=eq.${encodeURIComponent(cleanUsername)}`, 'PATCH', {
+        last_login: new Date().toISOString()
+      });
 
-      completeAuth(user.username, userHash);
+      finalizeLogin(cleanUsername, userHash);
     }
   }
 
-  function completeAuth(username, userHash) {
-    localStorage.setItem(STORAGE_USER_KEY, username);
-    localStorage.setItem(STORAGE_HASH_KEY, userHash);
-    document.getElementById('auth-gate-modal').style.display = 'none';
-    updateFarmerDisplay(username);
-    AudioModule.playCluck();
-    if (window.BracketModule) {
-      BracketModule.onUserAuthenticated();
+  function finalizeLogin(username, userHash) {
+    const prevName = localStorage.getItem(AppConfig.STORAGE_KEYS.PLAYER_NAME);
+    if (prevName && prevName !== username) {
+      localStorage.removeItem(AppConfig.STORAGE_KEYS.VOTE_LEDGER);
     }
+
+    localStorage.setItem(AppConfig.STORAGE_KEYS.PLAYER_NAME, username);
+    localStorage.setItem(AppConfig.STORAGE_KEYS.USER_HASH, userHash);
+    localStorage.setItem(AppConfig.STORAGE_KEYS.LAST_LOGIN, getTodayDateString());
+
+    document.getElementById('current-player-name').innerText = username;
+    closeAuthModal();
+    AudioModule.sfxFanfare();
+
+    BracketModule.onUserLogin(username, userHash);
   }
 
-  function updateFarmerDisplay(name) {
-    const el = document.getElementById('current-player-name');
-    if (el) el.innerText = name;
+  function showError(msg) {
+    const err = document.getElementById('auth-error-msg');
+    err.innerText = msg;
+    err.style.display = 'block';
+    AudioModule.sfxBuzz();
   }
 
-  function getCurrentUser() {
-    return {
-      lastName: localStorage.getItem(STORAGE_USER_KEY) || '',
-      userHash: localStorage.getItem(STORAGE_HASH_KEY) || ''
+  function getTodayDateString() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  async function executeSupabaseRest(endpoint, method = 'GET', body = null) {
+    const cleanUrl = AppConfig.SUPABASE_URL.replace(/\/+$/, '');
+    const headers = {
+      'apikey': AppConfig.SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${AppConfig.SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
     };
+    try {
+      const opts = { method, headers };
+      if (body && (method === 'POST' || method === 'PATCH' || method === 'PUT')) {
+        opts.body = JSON.stringify(body);
+      }
+      const res = await fetch(`${cleanUrl}/rest/v1/${endpoint}`, opts);
+      if (!res.ok) {
+        const errText = await res.text();
+        return { success: false, status: res.status, error: errText };
+      }
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : [];
+      return { success: true, data };
+    } catch (err) {
+      return { success: false, error: err.message };
+    }
+  }
+
+  function init() {
+    const storedName = localStorage.getItem(AppConfig.STORAGE_KEYS.PLAYER_NAME);
+    const lastLogin = localStorage.getItem(AppConfig.STORAGE_KEYS.LAST_LOGIN);
+    const today = getTodayDateString();
+
+    if (storedName) {
+      document.getElementById('current-player-name').innerText = storedName;
+    }
+
+    if (!storedName || lastLogin !== today) {
+      promptAuthModal('login');
+    }
+
+    document.getElementById('auth-password').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleAuthSubmit();
+    });
+    document.getElementById('auth-username').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') document.getElementById('auth-password').focus();
+    });
   }
 
   return {
     init,
-    setAuthMode,
-    resetToChoice,
+    promptAuthModal,
+    closeAuthModal,
+    switchMode,
     handleAuthSubmit,
-    promptSwitchUser,
-    getCurrentUser,
+    getDeterministicUserHash,
     sha256
   };
 })();
