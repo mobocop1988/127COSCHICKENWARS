@@ -15,6 +15,10 @@
   --stardew-gold-light: #ffe57f;
   --stardew-red: #c0392b;
   --stardew-blue: #34ace0;
+  --wheat-light: #fbe282;
+  --wheat-gold: #e2a829;
+  --wheat-deep: #b37315;
+  --wheat-dark: #6e410b;
   --text-dark: #3d2314;
   --text-light: #fffdf7;
 }
@@ -114,34 +118,62 @@ body {
   z-index: -3;
 }
 
-/* Swaying Bottom Wildflower & Grass Trim */
-.swaying-grass-bar {
+/* ========================================================
+   ANIMATED SWAYING GOLDEN WHEAT FARM BANNER (BOTTOM)
+   ======================================================== */
+.swaying-wheat-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 28px;
-  background: repeating-linear-gradient(
-    90deg,
-    #2c5011 0px, #2c5011 4px,
-    #4a7e20 4px, #4a7e20 8px,
-    #f4b41a 8px, #f4b41a 10px,
-    #3f7019 10px, #3f7019 16px,
-    #f45d48 16px, #f45d48 18px
-  );
-  border-top: 3px solid #1a3207;
-  z-index: 1;
+  height: 48px;
   pointer-events: none;
-  box-shadow: 0 -4px 8px rgba(0,0,0,0.25);
-  animation: swayGrass 3s ease-in-out infinite alternate;
+  z-index: 2;
+  overflow: hidden;
+  box-shadow: 0 -5px 12px rgba(0,0,0,0.35);
+  background: linear-gradient(180deg, transparent 0%, #9a6012 35%, #543306 100%);
 }
 
-@keyframes swayGrass {
-  0% { transform: skewX(-1.5deg); }
-  100% { transform: skewX(1.5deg); }
+.wheat-stalk-layer {
+  position: absolute;
+  bottom: 0;
+  left: -20px;
+  width: calc(100vw + 40px);
+  height: 42px;
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--wheat-deep) 0px, var(--wheat-deep) 2px,
+    var(--wheat-gold) 2px, var(--wheat-gold) 6px,
+    var(--wheat-light) 6px, var(--wheat-light) 8px,
+    transparent 8px, transparent 12px,
+    var(--wheat-deep) 12px, var(--wheat-deep) 14px,
+    var(--wheat-gold) 14px, var(--wheat-gold) 18px,
+    transparent 18px, transparent 24px
+  );
+  transform-origin: bottom center;
+  animation: swayWheat 3.5s ease-in-out infinite alternate;
 }
 
-/* Floating Pixel Feathers & Autumn Leaves */
+.wheat-ear-heads {
+  position: absolute;
+  top: 0;
+  left: -20px;
+  width: calc(100vw + 40px);
+  height: 24px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" viewBox="0 0 32 24"><path fill="%23fbe282" d="M3 4h4v6H3zm16 2h4v6h-4zm-8 4h4v6h-4zm18-2h4v6h-4z"/><path fill="%23e2a829" d="M4 1h2v3H4zm16 2h2v3h-2zm-8 4h2v3h-2zm18-2h2v3h-2z"/><path fill="%23b37315" d="M5 10h1v12H5zm16 2h1v10h-1zm-8 4h1v8h-1zm18-2h1v10h-1z"/></svg>');
+  background-size: 32px 24px;
+  transform-origin: bottom center;
+  animation: swayWheat 3.5s ease-in-out infinite alternate;
+}
+
+@keyframes swayWheat {
+  0% { transform: rotate(-2.2deg) skewX(-2deg); }
+  100% { transform: rotate(2.2deg) skewX(2deg); }
+}
+
+/* ========================================================
+   FALLING 8-BIT CHICKEN TENDERS & FEATHERS
+   ======================================================== */
 #feather-canvas-container {
   position: fixed;
   top: 0;
@@ -161,16 +193,19 @@ body {
   pointer-events: none;
 }
 
-.particle-feather {
-  width: 24px;
-  height: 24px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFFFFF" d="M11 1c-1 2-2 4-5 6l-3 1 1 2 2-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-2 2-1c0-1-1-2-2-2z"/><path fill="%23F4E0A0" d="M10 2c-1 2-2 3-4 5l-2 1 1 1 1-1c-1 2-1 3-1 4l1-1c1-2 2-4 4-5l1-1-1-1 1-1z"/></svg>');
+/* 8-Bit Cartoon Crispy Chicken Tender */
+.particle-tender {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.3));
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%234A2800" d="M4 2h7v2h2v3h1v4h-1v2h-2v1H5v-1H3v-2H2V7h1V4h1V2z"/><path fill="%23D37B11" d="M5 3h5v2h2v3h1v3h-1v2h-2v1H6v-1H4v-2H3V8h1V5h1V3z"/><path fill="%23F3A829" d="M6 4h3v2h2v3h-1v2H7v1H5v-1H4V7h2V4z"/><path fill="%23FFD54F" d="M7 5h2v1H8v2H6V6h1V5zm-1 4h2v1H6V9zm4-1h1v2h-1V8z"/><path fill="%238D4B00" d="M5 8h1v1H5zm5-2h1v1h-1zm-3 4h1v1H7zm4 1h1v1h-1z"/></svg>');
 }
 
-.particle-leaf {
-  width: 18px;
-  height: 18px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFA000" d="M8 2c-3 1-5 4-5 7 0 3 2 5 5 5 3 0 5-2 5-5 0-3-2-6-5-7z"/><path fill="%23D32F2F" d="M8 4c-1 1-2 3-2 5 0 2 1 3 2 3s2-1 2-3c0-2-1-4-2-5z"/></svg>');
+/* Stardew Farm White Feather */
+.particle-feather {
+  width: 22px;
+  height: 22px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFFFFF" d="M11 1c-1 2-2 4-5 6l-3 1 1 2 2-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-2 2-1c0-1-1-2-2-2z"/><path fill="%23F4E0A0" d="M10 2c-1 2-2 3-4 5l-2 1 1 1 1-1c-1 2-1 3-1 4l1-1c1-2 2-4 4-5l1-1-1-1 1-1z"/></svg>');
 }
 
 @keyframes fallAndSway {
@@ -178,51 +213,62 @@ body {
     transform: translateY(-50px) translateX(0) rotate(0deg);
     opacity: 0;
   }
-  10% { opacity: 0.8; }
+  10% { opacity: 0.9; }
   50% {
-    transform: translateY(50vh) translateX(45px) rotate(180deg);
+    transform: translateY(50vh) translateX(40px) rotate(180deg);
   }
-  90% { opacity: 0.8; }
+  90% { opacity: 0.9; }
   100% {
-    transform: translateY(105vh) translateX(-35px) rotate(360deg);
+    transform: translateY(106vh) translateX(-35px) rotate(360deg);
     opacity: 0;
   }
 }
 
 /* ========================================================
-   TOP CONTROLS (MUSIC & MASCOT SUMMON)
+   TOP CORNER CONTROLS (ISOLATED FROM BANNER)
    ======================================================== */
-.top-nav-bar {
-  position: fixed;
-  top: 10px;
-  right: 14px;
-  z-index: 1000;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
 
-.audio-control-bar, .mascot-test-bar {
+/* Audio Console: Pinned to TOP-LEFT */
+.top-audio-bar {
+  position: fixed;
+  top: 12px;
+  left: 14px;
+  z-index: 1000;
   display: flex;
   align-items: center;
   gap: 8px;
   background: var(--wood-mid);
   padding: 6px 12px;
   border: 3px solid var(--wood-border);
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.4);
-  border-radius: 2px;
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.45);
+  border-radius: 3px;
 }
 
 #now-playing-label {
   font-size: 0.55rem;
   color: var(--stardew-gold-light);
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Mascot Console: Pinned to TOP-RIGHT */
+.top-mascot-bar {
+  position: fixed;
+  top: 12px;
+  right: 14px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
 }
 
 .btn-mascot-summon {
   background: var(--stardew-gold) !important;
   color: var(--wood-dark) !important;
-  border-color: #8c6600 !important;
+  border: 3px solid #8c6600 !important;
   font-weight: bold;
+  box-shadow: 3px 3px 0px rgba(0,0,0,0.45) !important;
 }
 
 .btn-mascot-summon:hover {
@@ -239,7 +285,7 @@ body {
    ======================================================== */
 header {
   text-align: center;
-  padding: 35px 12px 10px 12px;
+  padding: 42px 12px 10px 12px;
   position: relative;
   z-index: 10;
 }
@@ -489,7 +535,7 @@ header {
 
 .bracket-container {
   display: none;
-  padding: 15px 25px 80px 25px;
+  padding: 15px 25px 90px 25px;
   overflow-x: auto;
   width: 100%;
 }
