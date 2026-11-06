@@ -4,7 +4,7 @@
 const BracketModule = (function () {
   let appState = null;
   const ADMIN_SALT = "CHICKEN_WARS_SALT_2026";
-  const EXPECTED_ADMIN_HASH = "905c94df0c5fb55acdac418663b7637e53f895a58dbc1535602db6efbaae136e";
+  const EXPECTED_ADMIN_HASH = "7e027827281153b0bb81745c9f74d5c6dc32ee954a24f7956d3d50a182f4fc74";
 
   function createInitialState() {
     const T = AppConfig.TEAMS;
