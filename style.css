@@ -43,8 +43,6 @@ body {
 /* ========================================================
    BACKGROUND ENVIRONMENT & WEATHER
    ======================================================== */
-
-/* Sunny Sky Gradient */
 .sky-gradient-bg {
   position: fixed;
   top: 0;
@@ -55,7 +53,6 @@ body {
   z-index: -6;
 }
 
-/* Drifting Pixel Clouds (2 Layers for Parallax Depth) */
 .cloud-layer {
   position: fixed;
   top: 0;
@@ -87,7 +84,6 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-/* Distant Mountain Silhouettes */
 .pixel-mountains {
   position: fixed;
   bottom: 0;
@@ -126,11 +122,11 @@ body {
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 48px;
+  height: 52px;
   pointer-events: none;
   z-index: 2;
   overflow: hidden;
-  box-shadow: 0 -5px 12px rgba(0,0,0,0.35);
+  box-shadow: 0 -5px 14px rgba(0,0,0,0.4);
   background: linear-gradient(180deg, transparent 0%, #9a6012 35%, #543306 100%);
 }
 
@@ -139,7 +135,7 @@ body {
   bottom: 0;
   left: -20px;
   width: calc(100vw + 40px);
-  height: 42px;
+  height: 46px;
   background-image: repeating-linear-gradient(
     90deg,
     var(--wheat-deep) 0px, var(--wheat-deep) 2px,
@@ -159,7 +155,7 @@ body {
   top: 0;
   left: -20px;
   width: calc(100vw + 40px);
-  height: 24px;
+  height: 28px;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" viewBox="0 0 32 24"><path fill="%23fbe282" d="M3 4h4v6H3zm16 2h4v6h-4zm-8 4h4v6h-4zm18-2h4v6h-4z"/><path fill="%23e2a829" d="M4 1h2v3H4zm16 2h2v3h-2zm-8 4h2v3h-2zm18-2h2v3h-2z"/><path fill="%23b37315" d="M5 10h1v12H5zm16 2h1v10h-1zm-8 4h1v8h-1zm18-2h1v10h-1z"/></svg>');
   background-size: 32px 24px;
   transform-origin: bottom center;
@@ -167,12 +163,12 @@ body {
 }
 
 @keyframes swayWheat {
-  0% { transform: rotate(-2.2deg) skewX(-2deg); }
-  100% { transform: rotate(2.2deg) skewX(2deg); }
+  0% { transform: rotate(-2.4deg) skewX(-2deg); }
+  100% { transform: rotate(2.4deg) skewX(2deg); }
 }
 
 /* ========================================================
-   FALLING 8-BIT CHICKEN TENDERS & FEATHERS
+   ENLARGED FALLING CHICKEN STRIPS & DETAILED FEATHERS
    ======================================================== */
 #feather-canvas-container {
   position: fixed;
@@ -193,91 +189,162 @@ body {
   pointer-events: none;
 }
 
-/* 8-Bit Cartoon Crispy Chicken Tender */
+/* Big Crispy Hand-Breaded Chicken Strip (48x48px base) */
 .particle-tender {
-  width: 32px;
-  height: 32px;
-  filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.3));
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%234A2800" d="M4 2h7v2h2v3h1v4h-1v2h-2v1H5v-1H3v-2H2V7h1V4h1V2z"/><path fill="%23D37B11" d="M5 3h5v2h2v3h1v3h-1v2h-2v1H6v-1H4v-2H3V8h1V5h1V3z"/><path fill="%23F3A829" d="M6 4h3v2h2v3h-1v2H7v1H5v-1H4V7h2V4z"/><path fill="%23FFD54F" d="M7 5h2v1H8v2H6V6h1V5zm-1 4h2v1H6V9zm4-1h1v2h-1V8z"/><path fill="%238D4B00" d="M5 8h1v1H5zm5-2h1v1h-1zm-3 4h1v1H7zm4 1h1v1h-1z"/></svg>');
+  width: 52px;
+  height: 52px;
+  filter: drop-shadow(3px 4px 0px rgba(0,0,0,0.38));
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%233A1F02" d="M4 3h10v2h4v3h2v7h-1v4h-3v2h-4v1H6v-1H3v-3H2V7h1V5h1V3z"/><path fill="%23964B00" d="M5 4h8v2h4v3h2v6h-1v4h-3v1h-4v1H7v-1H4v-2H3V8h1V6h1V4z"/><path fill="%23D37B11" d="M6 5h6v2h3v3h2v5h-1v3h-2v1h-4v1H8v-1H5v-2H4V9h1V7h1V5z"/><path fill="%23F5A623" d="M7 6h5v2h2v3h2v4h-1v2h-2v1h-3v1H9v-1H6v-1H5v-4h1V8h1V6z"/><path fill="%23FFD54F" d="M8 7h3v1h2v2h1v3h-1v1H9v1H7V9h1V7zm-2 5h1v2H6v-2zm7-1h1v2h-1v-2zm-3 4h2v1h-2v-1z"/><path fill="%23FFF2B2" d="M9 8h1v1H9V8zm3 2h1v1h-1v-1zm-4 4h1v1H8v-1z"/><circle cx="15" cy="14" r="0.8" fill="%237A3900"/><circle cx="8" cy="12" r="0.8" fill="%237A3900"/><circle cx="11" cy="16" r="0.8" fill="%237A3900"/></svg>');
 }
 
-/* Stardew Farm White Feather */
+/* Big Detailed Stardew Farm Feather (36x36px base) */
 .particle-feather {
-  width: 22px;
-  height: 22px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="%23FFFFFF" d="M11 1c-1 2-2 4-5 6l-3 1 1 2 2-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-2 2-1c0-1-1-2-2-2z"/><path fill="%23F4E0A0" d="M10 2c-1 2-2 3-4 5l-2 1 1 1 1-1c-1 2-1 3-1 4l1-1c1-2 2-4 4-5l1-1-1-1 1-1z"/></svg>');
+  width: 40px;
+  height: 40px;
+  filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.25));
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%235A4222" d="M19 1c-1 3-3 6-7 9l-4 2 2 3 3-2c-2 4-2 6-2 9l2-2c1-4 4-7 7-10l3-2-2-3 2-2c0-1-1-2-2-2z"/><path fill="%23FFFFFF" d="M18 2c-1 3-3 5-6 8l-3 2 1 2 2-1c-2 3-2 5-2 8l1-1c1-4 4-6 6-9l2-2-1-2 2-2c0-1-1-2-1-3z"/><path fill="%23FFF6D1" d="M17 3c-1 2-2 4-5 7l-2 1 1 1 1-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-1 1-1c0-1-1-2-1-3z"/><path fill="%23E5C875" d="M13 10l-1 1-5 5 1 1 5-5 1-1z"/></svg>');
 }
 
 @keyframes fallAndSway {
   0% {
-    transform: translateY(-50px) translateX(0) rotate(0deg);
+    transform: translateY(-60px) translateX(0) rotate(0deg);
     opacity: 0;
   }
-  10% { opacity: 0.9; }
+  12% { opacity: 0.95; }
   50% {
-    transform: translateY(50vh) translateX(40px) rotate(180deg);
+    transform: translateY(50vh) translateX(55px) rotate(180deg);
   }
-  90% { opacity: 0.9; }
+  88% { opacity: 0.95; }
   100% {
-    transform: translateY(106vh) translateX(-35px) rotate(360deg);
+    transform: translateY(106vh) translateX(-45px) rotate(360deg);
     opacity: 0;
   }
 }
 
 /* ========================================================
-   TOP CORNER CONTROLS (ISOLATED FROM BANNER)
+   RETRO JUKEBOX MUSIC CONSOLE (TOP-LEFT)
    ======================================================== */
-
-/* Audio Console: Pinned to TOP-LEFT */
-.top-audio-bar {
+.retro-jukebox-player {
   position: fixed;
-  top: 12px;
+  top: 14px;
   left: 14px;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--wood-mid);
-  padding: 6px 12px;
-  border: 3px solid var(--wood-border);
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.45);
-  border-radius: 3px;
 }
 
-#now-playing-label {
-  font-size: 0.55rem;
+.jukebox-btn {
+  background: linear-gradient(180deg, #7a421b 0%, #462208 100%);
+  border: 3px solid #231103;
+  box-shadow: 
+    inset 0 0 0 2px #d49b3d,
+    3px 4px 0px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: transform 0.1s ease, filter 0.15s ease;
+}
+
+.jukebox-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-2px);
+}
+
+.jukebox-btn:active {
+  transform: translateY(2px);
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.5);
+}
+
+.jukebox-disc-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jukebox-btn.is-playing .jukebox-disc-icon svg {
+  animation: spinRecord 3s linear infinite;
+}
+
+@keyframes spinRecord {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.jukebox-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.62rem;
   color: var(--stardew-gold-light);
-  max-width: 170px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0px #000;
 }
 
-/* Mascot Console: Pinned to TOP-RIGHT */
-.top-mascot-bar {
-  position: fixed;
-  top: 12px;
-  right: 14px;
-  z-index: 1000;
+/* Animated Equalizer Bars */
+.jukebox-eq {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+  padding-bottom: 2px;
 }
 
-.btn-mascot-summon {
-  background: var(--stardew-gold) !important;
-  color: var(--wood-dark) !important;
-  border: 3px solid #8c6600 !important;
-  font-weight: bold;
-  box-shadow: 3px 3px 0px rgba(0,0,0,0.45) !important;
+.jukebox-eq .bar {
+  width: 3px;
+  background: #9b7241;
+  height: 3px;
+  transition: height 0.2s ease;
 }
 
-.btn-mascot-summon:hover {
-  animation: wobbleBtn 0.3s infinite alternate;
+.jukebox-btn.is-playing .jukebox-eq .bar {
+  background: var(--stardew-gold);
 }
 
-@keyframes wobbleBtn {
-  0% { transform: translateY(-2px) rotate(-1deg); }
-  100% { transform: translateY(-2px) rotate(1deg); }
+.jukebox-btn.is-playing .jukebox-eq .bar-1 {
+  animation: eqPulse 0.5s ease-in-out infinite alternate;
+}
+.jukebox-btn.is-playing .jukebox-eq .bar-2 {
+  animation: eqPulse 0.7s ease-in-out infinite alternate 0.15s;
+}
+.jukebox-btn.is-playing .jukebox-eq .bar-3 {
+  animation: eqPulse 0.4s ease-in-out infinite alternate 0.3s;
+}
+
+@keyframes eqPulse {
+  0% { height: 3px; }
+  100% { height: 14px; }
+}
+
+/* ========================================================
+   SECRET EASTER EGG SUMMON BUTTON (RANDOMIZED POSITION)
+   ======================================================== */
+.secret-easter-egg {
+  position: fixed;
+  z-index: 1002;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+  filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.4));
+  transition: transform 0.15s ease, filter 0.15s ease;
+  animation: eggShimmer 4s ease-in-out infinite alternate;
+}
+
+.secret-easter-egg:hover {
+  transform: scale(1.18) rotate(6deg);
+  filter: drop-shadow(0 0 8px #ffe57f) drop-shadow(2px 4px 0px rgba(0,0,0,0.5));
+}
+
+.secret-easter-egg:active {
+  transform: scale(0.92) rotate(-8deg);
+}
+
+@keyframes eggShimmer {
+  0% { transform: translateY(0) rotate(0deg); }
+  60% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-4px) rotate(-4deg); }
+  85% { transform: translateY(0) rotate(4deg); }
+  100% { transform: translateY(0) rotate(0deg); }
 }
 
 /* ========================================================
@@ -304,7 +371,6 @@ header {
   position: relative;
 }
 
-/* Stardew hanging chains */
 .hanging-sign {
   animation: gentleSway 5s ease-in-out infinite alternate;
   transform-origin: top center;
@@ -404,7 +470,7 @@ header {
 }
 
 /* ========================================================
-   NAVIGATION BUTTONS (STARDEW DIALOGUE BUTTONS)
+   NAVIGATION BUTTONS
    ======================================================== */
 .nav-tabs {
   display: flex;
@@ -579,7 +645,7 @@ header {
   gap: 25px;
 }
 
-/* Matchup / Bout Box (Stardew Planks) */
+/* Matchup / Bout Box */
 .bout-card {
   background: var(--parchment-bg);
   border: 4px solid var(--wood-mid);
@@ -733,7 +799,6 @@ header {
   margin: 2px 0;
 }
 
-/* Grand Finals Box */
 .grand-finals-wrapper {
   max-width: 600px;
   margin: 25px auto;
@@ -964,7 +1029,6 @@ header {
   height: 100%;
 }
 
-/* Wing Flap Keyframes on Mascot Peeking */
 .mascot-peeker-container.peek-active .mascot-left-wing {
   animation: flapLeft 0.22s infinite alternate ease-in-out;
   transform-origin: 12px 42px;
@@ -984,7 +1048,6 @@ header {
   100% { transform: rotate(28deg); }
 }
 
-/* Comic Speech Bubble */
 .speech-bubble {
   background: #ffffff;
   border: 4px solid #000000;
@@ -1005,7 +1068,6 @@ header {
   100% { transform: translateY(-4px); }
 }
 
-/* Mascot Edge Positions */
 .mascot-peeker-container.pos-bottom {
   bottom: 0;
   left: 50%;
