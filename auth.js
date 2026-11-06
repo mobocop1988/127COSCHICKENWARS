@@ -1,6 +1,7 @@
 /**
  * auth.js
- * First-access prompt, last-name username registration, case-insensitive passwords, and Supabase integration
+ * First-access prompt, username registration matching chicken_wars_users columns:
+ * (id, username, password_hash, created_at, last_login)
  */
 const AuthModule = (() => {
   let authMode = 'choice'; // 'choice' | 'login' | 'register'
@@ -44,11 +45,11 @@ const AuthModule = (() => {
 
     if (mode === 'login') {
       document.getElementById('auth-title').innerText = "FARMER LOGIN";
-      document.getElementById('auth-message').innerText = "Enter your LAST NAME and password to access your ballot.";
+      document.getElementById('auth-message').innerText = "Enter your LAST NAME (Username) and password.";
       document.getElementById('auth-action-submit').innerText = "LOGIN";
     } else {
       document.getElementById('auth-title').innerText = "REGISTER COOP BALLOT";
-      document.getElementById('auth-message').innerText = "Register your LAST NAME and create a password.";
+      document.getElementById('auth-message').innerText = "Create an account with your LAST NAME and a password.";
       document.getElementById('auth-action-submit').innerText = "REGISTER";
     }
     document.getElementById('auth-username').focus();
@@ -72,12 +73,12 @@ const AuthModule = (() => {
 
     const rawName = document.getElementById('auth-username').value.trim();
     // CASE-INSENSITIVE USER PASSWORD:
-    // Convert to lowercase and trim spaces so casing never causes login issues
+    // Standardize to lowercase and trim spaces before hashing
     const rawPass = (document.getElementById('auth-password').value || '').trim().toLowerCase();
 
-    const lastName = rawName.toUpperCase().replace(/[^A-Z0-9\-\'\s]/g, '').trim();
-    if (!lastName) {
-      errorEl.innerText = "Please enter a valid last name.";
+    const username = rawName.toUpperCase().replace(/[^A-Z0-9\-\'\s]/g, '').trim();
+    if (!username) {
+      errorEl.innerText = "Please enter a valid last name / username.";
       return;
     }
 
@@ -87,7 +88,7 @@ const AuthModule = (() => {
     }
 
     const passHash = await sha256(rawPass + "_CW26_SALT");
-    const userHash = await sha256(lastName + "_CW26_USER");
+    const userHash = await sha256(username + "_CW26_USER");
 
     if (!window.supabaseClient) {
       errorEl.innerText = "Database offline. Check Supabase URL & Key in config.js.";
@@ -95,11 +96,11 @@ const AuthModule = (() => {
     }
 
     if (authMode === 'register') {
-      // 1. Check if user already exists
+      // 1. Check if username already exists in chicken_wars_users
       const { data: existing, error: checkError } = await window.supabaseClient
         .from('chicken_wars_users')
         .select('id')
-        .eq('last_name', lastName)
+        .eq('username', username)
         .maybeSingle();
 
       if (checkError) {
@@ -108,17 +109,19 @@ const AuthModule = (() => {
       }
 
       if (existing) {
-        errorEl.innerText = "This last name is already registered. Please choose Login.";
+        errorEl.innerText = "This username is already registered. Please click 'BACK' and choose Login.";
         return;
       }
 
-      // 2. Create user record
+      // 2. Insert into chicken_wars_users matching schema:
+      // (username, password_hash, last_login)
+      const nowIso = new Date().toISOString();
       const { error: insertError } = await window.supabaseClient
         .from('chicken_wars_users')
         .insert([{
-          last_name: lastName,
+          username: username,
           password_hash: passHash,
-          user_hash: userHash
+          last_login: nowIso
         }]);
 
       if (insertError) {
@@ -129,38 +132,44 @@ const AuthModule = (() => {
       // 3. Initialize user score row
       await window.supabaseClient
         .from('chicken_wars_scores')
-        .insert([{
+        .upsert([{
           user_hash: userHash,
-          player_name: lastName,
+          player_name: username,
           score: 0,
           correct_picks: 0
-        }]);
+        }], { onConflict: 'user_hash' });
 
-      completeAuth(lastName, userHash);
+      completeAuth(username, userHash);
 
     } else if (authMode === 'login') {
-      // Authenticate
+      // Authenticate against chicken_wars_users
       const { data: user, error } = await window.supabaseClient
         .from('chicken_wars_users')
         .select('*')
-        .eq('last_name', lastName)
+        .eq('username', username)
         .eq('password_hash', passHash)
         .maybeSingle();
 
       if (error || !user) {
-        errorEl.innerText = "Invalid last name or password.";
+        errorEl.innerText = "Invalid username or password.";
         return;
       }
 
-      completeAuth(user.last_name, user.user_hash);
+      // Update last_login timestamp
+      await window.supabaseClient
+        .from('chicken_wars_users')
+        .update({ last_login: new Date().toISOString() })
+        .eq('id', user.id);
+
+      completeAuth(user.username, userHash);
     }
   }
 
-  function completeAuth(lastName, userHash) {
-    localStorage.setItem(STORAGE_USER_KEY, lastName);
+  function completeAuth(username, userHash) {
+    localStorage.setItem(STORAGE_USER_KEY, username);
     localStorage.setItem(STORAGE_HASH_KEY, userHash);
     document.getElementById('auth-gate-modal').style.display = 'none';
-    updateFarmerDisplay(lastName);
+    updateFarmerDisplay(username);
     AudioModule.playCluck();
     if (window.BracketModule) {
       BracketModule.onUserAuthenticated();
