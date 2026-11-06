@@ -1,167 +1,112 @@
 /**
- * Audio Module: Playlist Rotator & 8-Bit Cluck Sound FX
+ * audio.js
+ * Manages 3-song playlist cycling and synthesized 8-bit chicken clucks
  */
 const AudioModule = (() => {
-  let audioCtx = null;
+  let audioContext = null;
   let bgAudio = null;
   let currentTrackIndex = 0;
   let isPlaying = false;
 
-  function getAudioContext() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function initAudioContext() {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
-    }
-    return audioCtx;
-  }
-
-  // 8-Bit Clucking Sound Generated Synthetically on Vote
-  function playCluckSound() {
-    try {
-      const ctx = getAudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = 'sawtooth';
-      const now = ctx.currentTime;
-
-      // Realistic chicken cluck pitch slide
-      osc.frequency.setValueAtTime(360, now);
-      osc.frequency.exponentialRampToValueAtTime(740, now + 0.05);
-      osc.frequency.exponentialRampToValueAtTime(260, now + 0.14);
-
-      gain.gain.setValueAtTime(0.16, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start(now);
-      osc.stop(now + 0.16);
-
-      // Follow-up small bok
-      setTimeout(() => {
-        try {
-          const osc2 = ctx.createOscillator();
-          const gain2 = ctx.createGain();
-          osc2.type = 'sawtooth';
-          const t2 = ctx.currentTime;
-          osc2.frequency.setValueAtTime(420, t2);
-          osc2.frequency.exponentialRampToValueAtTime(290, t2 + 0.09);
-          gain2.gain.setValueAtTime(0.12, t2);
-          gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.09);
-          osc2.connect(gain2);
-          gain2.connect(ctx.destination);
-          osc2.start(t2);
-          osc2.stop(t2 + 0.09);
-        } catch(e) {}
-      }, 95);
-    } catch (e) {
-      console.warn("WebAudio cluck failed:", e);
-    }
-  }
-
-  function playUiTone(freq, type = 'square', duration = 0.1) {
-    try {
-      const ctx = getAudioContext();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + duration);
-    } catch(e) {}
-  }
-
-  function sfxFanfare() {
-    playUiTone(440, 'square', 0.1);
-    setTimeout(() => playUiTone(554.37, 'square', 0.1), 100);
-    setTimeout(() => playUiTone(659.25, 'square', 0.12), 200);
-    setTimeout(() => playUiTone(880, 'square', 0.25), 320);
-  }
-
-  function sfxBuzz() {
-    playUiTone(130, 'sawtooth', 0.2);
-  }
-
-  function sfxSwitch() {
-    playUiTone(493.88, 'triangle', 0.08);
-  }
-
-  // Rotate between playlist tracks seamlessly
-  function playNextTrack() {
-    if (!AppConfig.MUSIC_PLAYLIST || AppConfig.MUSIC_PLAYLIST.length === 0) return;
-    const track = AppConfig.MUSIC_PLAYLIST[currentTrackIndex];
-    if (!bgAudio) {
-      bgAudio = new Audio();
-      bgAudio.volume = 0.35;
-      bgAudio.addEventListener('ended', () => {
-        currentTrackIndex = (currentTrackIndex + 1) % AppConfig.MUSIC_PLAYLIST.length;
-        playNextTrack();
-      });
-    }
-
-    bgAudio.src = track;
-    bgAudio.play().then(() => {
-      isPlaying = true;
-      updateJukeboxState();
-    }).catch(err => {
-      console.log("Audio autoplay prevented by browser:", err);
-      isPlaying = false;
-      updateJukeboxState();
-    });
-  }
-
-  function toggleMusic() {
-    getAudioContext();
-    const btn = document.getElementById('music-toggle-btn');
-    if (!bgAudio) {
-      playNextTrack();
-      return;
-    }
-
-    if (bgAudio.paused) {
-      bgAudio.play().then(() => {
-        isPlaying = true;
-        updateJukeboxState();
-      }).catch(() => {});
-    } else {
-      bgAudio.pause();
-      isPlaying = false;
-      updateJukeboxState();
-    }
-  }
-
-  function updateJukeboxState() {
-    const btn = document.getElementById('music-toggle-btn');
-    if (btn) {
-      if (isPlaying) {
-        btn.classList.add('is-playing');
-      } else {
-        btn.classList.remove('is-playing');
-      }
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
     }
   }
 
   function init() {
-    const btn = document.getElementById('music-toggle-btn');
-    if (btn) {
-      btn.addEventListener('click', toggleMusic);
+    bgAudio = new Audio();
+    bgAudio.volume = 0.35;
+    currentTrackIndex = Math.floor(Math.random() * AppConfig.PLAYLIST.length);
+    bgAudio.src = AppConfig.PLAYLIST[currentTrackIndex];
+
+    bgAudio.addEventListener('ended', playNextTrack);
+
+    const toggleBtn = document.getElementById('music-toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', toggleMusic);
+    }
+  }
+
+  function toggleMusic() {
+    initAudioContext();
+    const toggleBtn = document.getElementById('music-toggle-btn');
+
+    if (isPlaying) {
+      bgAudio.pause();
+      isPlaying = false;
+      if (toggleBtn) toggleBtn.classList.remove('is-playing');
+    } else {
+      bgAudio.play().then(() => {
+        isPlaying = true;
+        if (toggleBtn) toggleBtn.classList.add('is-playing');
+      }).catch(err => {
+        console.warn("Audio playback prevented:", err);
+      });
+    }
+  }
+
+  function playNextTrack() {
+    currentTrackIndex = (currentTrackIndex + 1) % AppConfig.PLAYLIST.length;
+    bgAudio.src = AppConfig.PLAYLIST[currentTrackIndex];
+    if (isPlaying) {
+      bgAudio.play().catch(() => {});
+    }
+  }
+
+  /**
+   * Synthesize an 8-bit chicken cluck sound effect on voting
+   */
+  function playCluck() {
+    try {
+      initAudioContext();
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.type = 'sawtooth';
+      const now = audioContext.currentTime;
+
+      // Realistic chicken cluck pitch drops rapidly
+      osc.frequency.setValueAtTime(620, now);
+      osc.frequency.exponentialRampToValueAtTime(280, now + 0.08);
+
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.11);
+
+      // Secondary quick chirp
+      setTimeout(() => {
+        if (!audioContext) return;
+        const osc2 = audioContext.createOscillator();
+        const gain2 = audioContext.createGain();
+        osc2.type = 'triangle';
+        const t2 = audioContext.currentTime;
+        osc2.frequency.setValueAtTime(750, t2);
+        osc2.frequency.exponentialRampToValueAtTime(320, t2 + 0.07);
+        gain2.gain.setValueAtTime(0.1, t2);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.07);
+        osc2.connect(gain2);
+        gain2.connect(audioContext.destination);
+        osc2.start(t2);
+        osc2.stop(t2 + 0.07);
+      }, 70);
+
+    } catch (e) {
+      console.warn("Audio error:", e);
     }
   }
 
   return {
     init,
-    playCluckSound,
-    sfxFanfare,
-    sfxBuzz,
-    sfxSwitch,
-    toggleMusic
+    toggleMusic,
+    playCluck
   };
 })();
