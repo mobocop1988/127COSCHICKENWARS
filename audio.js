@@ -1,170 +1,112 @@
 /**
- * audio.js - WebAudio Synthesizer & 3-Song Background Playlist Rotator
+ * audio.js
+ * Manages 3-song playlist cycling and synthesized 8-bit chicken clucks
  */
-const AudioModule = (function () {
-  let audioCtx = null;
-  let bgAudioElement = null;
-  let isPlaying = false;
+const AudioModule = (() => {
+  let audioContext = null;
+  let bgAudio = null;
   let currentTrackIndex = 0;
-
-  const PLAYLIST = ['cluck1.mp3', 'cluck2.mp3', 'cluck3.mp3'];
+  let isPlaying = false;
 
   function initAudioContext() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume();
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
     }
   }
 
-  function playTone(freq, type, duration, gainLevel = 0.08) {
-    try {
-      initAudioContext();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(gainLevel, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    } catch (e) {}
-  }
+  function init() {
+    bgAudio = new Audio();
+    bgAudio.volume = 0.35;
+    currentTrackIndex = Math.floor(Math.random() * AppConfig.PLAYLIST.length);
+    bgAudio.src = AppConfig.PLAYLIST[currentTrackIndex];
 
-  function sfxChickenCluck() {
-    try {
-      initAudioContext();
-      const now = audioCtx.currentTime;
-      const osc1 = audioCtx.createOscillator();
-      const osc2 = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+    bgAudio.addEventListener('ended', playNextTrack);
 
-      osc1.type = 'sawtooth';
-      osc2.type = 'triangle';
-
-      osc1.frequency.setValueAtTime(540, now);
-      osc1.frequency.exponentialRampToValueAtTime(260, now + 0.12);
-
-      osc2.frequency.setValueAtTime(420, now);
-      osc2.frequency.exponentialRampToValueAtTime(180, now + 0.15);
-
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-
-      osc1.connect(gain);
-      osc2.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      osc1.start(now);
-      osc2.start(now);
-      osc1.stop(now + 0.18);
-      osc2.stop(now + 0.18);
-
-      setTimeout(() => {
-        const now2 = audioCtx.currentTime;
-        const subOsc = audioCtx.createOscillator();
-        const subGain = audioCtx.createGain();
-        subOsc.type = 'sawtooth';
-        subOsc.frequency.setValueAtTime(680, now2);
-        subOsc.frequency.exponentialRampToValueAtTime(320, now2 + 0.15);
-        subGain.gain.setValueAtTime(0.18, now2);
-        subGain.gain.exponentialRampToValueAtTime(0.001, now2 + 0.16);
-        subOsc.connect(subGain);
-        subGain.connect(audioCtx.destination);
-        subOsc.start(now2);
-        subOsc.stop(now2 + 0.16);
-      }, 70);
-    } catch (e) {}
-  }
-
-  function sfxSwitch() { playTone(440, 'triangle', 0.08, 0.05); }
-  function sfxCoin() {
-    playTone(987.77, 'square', 0.08, 0.06);
-    setTimeout(() => playTone(1318.51, 'square', 0.2, 0.06), 70);
-  }
-  function sfxBuzz() { playTone(140, 'sawtooth', 0.2, 0.09); }
-  function sfxFanfare() {
-    playTone(523.25, 'square', 0.1, 0.08);
-    setTimeout(() => playTone(659.25, 'square', 0.1, 0.08), 100);
-    setTimeout(() => playTone(783.99, 'square', 0.1, 0.08), 200);
-    setTimeout(() => playTone(1046.50, 'square', 0.35, 0.09), 300);
-  }
-
-  function initMusicPlayer() {
-    bgAudioElement = new Audio();
-    bgAudioElement.volume = 0.35;
-    bgAudioElement.addEventListener('ended', playNextTrack);
-    bgAudioElement.addEventListener('error', () => {
-      setTimeout(playNextTrack, 2000);
-    });
+    const toggleBtn = document.getElementById('music-toggle-btn');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', toggleMusic);
+    }
   }
 
   function toggleMusic() {
     initAudioContext();
-    if (!bgAudioElement) initMusicPlayer();
+    const toggleBtn = document.getElementById('music-toggle-btn');
 
     if (isPlaying) {
-      bgAudioElement.pause();
+      bgAudio.pause();
       isPlaying = false;
-      updateUI();
+      if (toggleBtn) toggleBtn.classList.remove('is-playing');
     } else {
-      bgAudioElement.src = PLAYLIST[currentTrackIndex];
-      bgAudioElement.play().then(() => {
+      bgAudio.play().then(() => {
         isPlaying = true;
-        updateUI();
-      }).catch(() => {
-        isPlaying = false;
-        updateUI();
+        if (toggleBtn) toggleBtn.classList.add('is-playing');
+      }).catch(err => {
+        console.warn("Audio playback prevented:", err);
       });
     }
   }
 
   function playNextTrack() {
-    currentTrackIndex = (currentTrackIndex + 1) % PLAYLIST.length;
-    if (bgAudioElement) {
-      bgAudioElement.src = PLAYLIST[currentTrackIndex];
-      if (isPlaying) {
-        bgAudioElement.play().catch(() => {});
-      }
-    }
-    updateUI();
-  }
-
-  function updateUI() {
-    const btn = document.getElementById('audio-toggle-btn');
-    const label = document.getElementById('audio-status-label');
-    if (!btn || !label) return;
-
+    currentTrackIndex = (currentTrackIndex + 1) % AppConfig.PLAYLIST.length;
+    bgAudio.src = AppConfig.PLAYLIST[currentTrackIndex];
     if (isPlaying) {
-      btn.classList.add('is-playing');
-      label.innerText = 'TUNE: ON';
-    } else {
-      btn.classList.remove('is-playing');
-      label.innerText = 'TUNE: OFF';
+      bgAudio.play().catch(() => {});
     }
   }
 
-  function init() {
-    initMusicPlayer();
-    const unlockHandler = () => {
+  /**
+   * Synthesize an 8-bit chicken cluck sound effect on voting
+   */
+  function playCluck() {
+    try {
       initAudioContext();
-      document.removeEventListener('click', unlockHandler);
-      document.removeEventListener('keydown', unlockHandler);
-    };
-    document.addEventListener('click', unlockHandler);
-    document.addEventListener('keydown', unlockHandler);
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.type = 'sawtooth';
+      const now = audioContext.currentTime;
+
+      // Realistic chicken cluck pitch drops rapidly
+      osc.frequency.setValueAtTime(620, now);
+      osc.frequency.exponentialRampToValueAtTime(280, now + 0.08);
+
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.11);
+
+      // Secondary quick chirp
+      setTimeout(() => {
+        if (!audioContext) return;
+        const osc2 = audioContext.createOscillator();
+        const gain2 = audioContext.createGain();
+        osc2.type = 'triangle';
+        const t2 = audioContext.currentTime;
+        osc2.frequency.setValueAtTime(750, t2);
+        osc2.frequency.exponentialRampToValueAtTime(320, t2 + 0.07);
+        gain2.gain.setValueAtTime(0.1, t2);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.07);
+        osc2.connect(gain2);
+        gain2.connect(audioContext.destination);
+        osc2.start(t2);
+        osc2.stop(t2 + 0.07);
+      }, 70);
+
+    } catch (e) {
+      console.warn("Audio error:", e);
+    }
   }
 
   return {
     init,
     toggleMusic,
-    sfxChickenCluck,
-    sfxSwitch,
-    sfxCoin,
-    sfxBuzz,
-    sfxFanfare
+    playCluck
   };
 })();
