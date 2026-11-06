@@ -11,10 +11,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
 
-  <!-- Supabase JS Library -->
+  <!-- Supabase JS Library via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Custom Stylesheet -->
+  <!-- Custom Stylesheet (same folder) -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,23 +30,23 @@
   <div class="pixel-mountains"></div>
   <div class="pixel-hills"></div>
 
-  <!-- Floating Falling Feathers & Golden Leaves -->
+  <!-- Floating Falling Feathers, Leaves, and 8-Bit Fried Chicken Tenders -->
   <div id="feather-canvas-container"></div>
 
-  <!-- Animated Swaying Grass & Wildflower Ground Trim -->
-  <div class="swaying-grass-bar"></div>
+  <!-- Animated Swaying Golden Wheat Farm Border -->
+  <div class="swaying-wheat-bar"></div>
 
-  <!-- Top Ambient Controls -->
-  <div class="top-nav-bar">
-    <div class="audio-control-bar">
-      <button id="music-toggle-btn" class="stardew-btn btn-sm">♪ PLAY MUSIC</button>
-      <span id="now-playing-label">TRACK: [cluck1.mp3]</span>
-    </div>
-    <div class="mascot-test-bar">
-      <button class="stardew-btn btn-sm btn-mascot-summon" onclick="MascotModule.triggerManualPeek()" title="Summon the Chicken Mascot!">
-        🐔 SUMMON CLUCKER
-      </button>
-    </div>
+  <!-- Top Audio Console (Fixed Top-Left, Not Blocking Banner) -->
+  <div class="top-audio-bar">
+    <button id="music-toggle-btn" class="stardew-btn btn-sm">♪ PLAY MUSIC</button>
+    <span id="now-playing-label">TRACK: [cluck1.mp3]</span>
+  </div>
+
+  <!-- Top-Right Mascot Summon Button -->
+  <div class="top-mascot-bar">
+    <button class="stardew-btn btn-sm btn-mascot-summon" onclick="MascotModule.triggerManualPeek()" title="Summon the Chicken Mascot!">
+      🐔 SUMMON CLUCKER
+    </button>
   </div>
 
   <!-- Header & Stardew Wooden Signboard -->
@@ -351,7 +351,7 @@
     127 COS CHICKEN WARS '26 • CRAFTED WITH RETRO STARDEW VALLEY PRIDE • HOSTED ON GITHUB PAGES
   </footer>
 
-  <!-- Modular Scripts -->
+  <!-- Flat Directory Scripts (All in root alongside index.html) -->
   <script src="config.js"></script>
   <script src="audio.js"></script>
   <script src="auth.js"></script>
