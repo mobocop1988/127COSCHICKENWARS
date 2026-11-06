@@ -1,23 +1,24 @@
-/* ========================================================
-   STARDEW VALLEY LIVING RETRO THEME & ANIMATIONS
-   ======================================================== */
+/* ==============================================================================
+   CHICKEN WARS '26 - STARDEW VALLEY RETRO THEME
+   Warm woods, parchment dialogue boxes, countryside skies, golden wheat, & particles
+   ============================================================================== */
+
 :root {
-  --wood-dark: #2f1807;
-  --wood-mid: #683818;
-  --wood-light: #9e5b2b;
-  --wood-border: #3d1b02;
-  --parchment-bg: #faeed1;
-  --parchment-border: #9b7241;
-  --parchment-dark: #e8d5a8;
-  --stardew-green: #59981a;
-  --stardew-green-dark: #355e10;
-  --stardew-gold: #f4b41a;
-  --stardew-gold-light: #ffe57f;
-  --stardew-red: #c0392b;
-  --wheat-light: #fbe282;
-  --wheat-gold: #e2a829;
-  --wheat-deep: #b37315;
-  --text-dark: #3d2314;
+  --wood-dark: #3b1d08;
+  --wood-medium: #703816;
+  --wood-light: #9c5421;
+  --wood-highlight: #d17c38;
+  --parchment-bg: #fde8b3;
+  --parchment-border: #91682f;
+  --parchment-dark: #e5c98d;
+  --stardew-yellow: #f8cf46;
+  --stardew-gold: #ffbe26;
+  --stardew-green: #5ca135;
+  --stardew-dark-green: #295c1a;
+  --stardew-red: #bb342f;
+  --stardew-cream: #fff9e6;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-narrow: 'VT323', monospace;
 }
 
 * {
@@ -25,55 +26,67 @@
   margin: 0;
   padding: 0;
   user-select: none;
-  image-rendering: pixelated;
 }
 
 body {
-  background-color: #3f6625;
-  color: var(--text-dark);
-  font-family: 'Press Start 2P', monospace;
+  background-color: #3b5f2a;
+  color: #2b1704;
+  font-family: var(--font-pixel);
+  overflow-x: hidden;
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
 }
 
-/* ========================================================
-   BACKGROUND ENVIRONMENT & WEATHER
-   ======================================================== */
+/* Sky Gradient Background */
 .sky-gradient-bg {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(180deg, #6fc3df 0%, #a2d7a7 45%, #5a8a30 75%, #3c621d 100%);
+  background: linear-gradient(180deg, #5fb4e5 0%, #a2d7f5 42%, #e5f4fb 70%, #9bc672 100%);
   z-index: -6;
 }
 
-.cloud-layer {
+/* Drifting Pixel Clouds Layer 1 */
+.pixel-clouds-layer-1 {
   position: fixed;
-  top: 0;
+  top: 15px;
   left: 0;
   width: 200vw;
-  height: 220px;
-  pointer-events: none;
+  height: 120px;
+  background-image: radial-gradient(circle at 40px 40px, #ffffff 32px, transparent 33px),
+                    radial-gradient(circle at 75px 30px, #ffffff 42px, transparent 43px),
+                    radial-gradient(circle at 115px 42px, #ffffff 30px, transparent 31px),
+                    radial-gradient(circle at 380px 45px, #ffffff 35px, transparent 36px),
+                    radial-gradient(circle at 420px 32px, #ffffff 45px, transparent 46px),
+                    radial-gradient(circle at 750px 38px, #ffffff 40px, transparent 41px);
+  background-size: 850px 120px;
   background-repeat: repeat-x;
-  z-index: -5;
-}
-
-.cloud-layer-back {
-  opacity: 0.45;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="60" viewBox="0 0 160 60"><path fill="%23ffffff" d="M30 35h10v-5h10v-5h20v5h10v5h10v10H20V40h10v-5zm70 5h10v-5h15v-5h15v5h10v5h5v10H95V45h5v-5z"/></svg>');
-  background-size: 320px 120px;
+  opacity: 0.85;
+  filter: drop-shadow(0 4px 0 rgba(0,0,0,0.06));
   animation: driftClouds 75s linear infinite;
+  z-index: -5;
+  pointer-events: none;
 }
 
-.cloud-layer-front {
-  opacity: 0.75;
-  top: 25px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="70" viewBox="0 0 220 70"><path fill="%23ffffff" d="M40 30h15v-8h25v-8h30v8h20v8h15v16H30V38h10v-8zm100 12h12v-6h18v-6h16v6h12v6h6v12h-64V48h0z"/></svg>');
-  background-size: 440px 140px;
-  animation: driftClouds 42s linear infinite;
+/* Drifting Pixel Clouds Layer 2 */
+.pixel-clouds-layer-2 {
+  position: fixed;
+  top: 65px;
+  left: 0;
+  width: 200vw;
+  height: 100px;
+  background-image: radial-gradient(circle at 140px 30px, #ffffff 28px, transparent 29px),
+                    radial-gradient(circle at 170px 22px, #ffffff 36px, transparent 37px),
+                    radial-gradient(circle at 520px 32px, #ffffff 34px, transparent 35px),
+                    radial-gradient(circle at 560px 24px, #ffffff 40px, transparent 41px);
+  background-size: 700px 100px;
+  background-repeat: repeat-x;
+  opacity: 0.55;
+  animation: driftClouds 120s linear infinite;
+  z-index: -5;
+  pointer-events: none;
 }
 
 @keyframes driftClouds {
@@ -81,720 +94,199 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-.pixel-mountains {
+/* Distant Rolling Hills */
+.rolling-hills-bg {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
-  height: 38vh;
-  pointer-events: none;
+  height: 380px;
   background: 
-    radial-gradient(ellipse at 20% 100%, #2f521b 0%, #2f521b 50%, transparent 51%),
-    radial-gradient(ellipse at 65% 100%, #264714 0%, #264714 55%, transparent 56%),
-    radial-gradient(ellipse at 95% 100%, #1e3b0e 0%, #1e3b0e 52%, transparent 53%);
-  opacity: 0.65;
+    radial-gradient(ellipse 55% 180px at 15% 100%, #4c8a2b 98%, transparent 100%),
+    radial-gradient(ellipse 60% 210px at 85% 100%, #3e7323 98%, transparent 100%),
+    radial-gradient(ellipse 70% 240px at 50% 100%, #2f5c1a 98%, transparent 100%);
   z-index: -4;
-}
-
-.pixel-hills {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  height: 25vh;
   pointer-events: none;
-  background: 
-    radial-gradient(ellipse at 10% 100%, #4c7728 0%, #4c7728 50%, transparent 52%),
-    radial-gradient(ellipse at 45% 100%, #436e21 0%, #436e21 55%, transparent 57%),
-    radial-gradient(ellipse at 80% 100%, #3a621b 0%, #3a621b 48%, transparent 50%);
-  opacity: 0.9;
-  z-index: -3;
 }
 
-/* ========================================================
-   SWAYING GOLDEN WHEAT FARM BANNER (BOTTOM)
-   ======================================================== */
+/* Swaying Animated Wheat Farm Banner */
 .swaying-wheat-bar {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100vw;
   height: 52px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="%23b37315" d="M15 32 L15 16 M17 32 L17 16"/><ellipse cx="14" cy="18" rx="2.5" ry="4" fill="%23e2a829" transform="rotate(-25 14 18)"/><ellipse cx="18" cy="16" rx="2.5" ry="4" fill="%23fbe282" transform="rotate(25 18 16)"/><ellipse cx="14" cy="12" rx="2.5" ry="4" fill="%23e2a829" transform="rotate(-25 14 12)"/><ellipse cx="18" cy="10" rx="2.5" ry="4" fill="%23fbe282" transform="rotate(25 18 10)"/><ellipse cx="16" cy="5" rx="2.2" ry="4.5" fill="%23fbe282"/><circle cx="16" cy="2" r="1.2" fill="%23b37315"/></svg>');
+  background-size: 32px 48px;
+  background-repeat: repeat-x;
+  background-position: bottom;
+  transform-origin: bottom center;
+  animation: swayWheat 3.5s ease-in-out infinite alternate;
+  z-index: 10;
   pointer-events: none;
-  z-index: 2;
-  overflow: hidden;
-  box-shadow: 0 -5px 14px rgba(0,0,0,0.4);
-  background: linear-gradient(180deg, transparent 0%, #9a6012 35%, #543306 100%);
-}
-
-.wheat-stalk-layer {
-  position: absolute;
-  bottom: 0;
-  left: -20px;
-  width: calc(100vw + 40px);
-  height: 46px;
-  background-image: repeating-linear-gradient(
-    90deg,
-    var(--wheat-deep) 0px, var(--wheat-deep) 2px,
-    var(--wheat-gold) 2px, var(--wheat-gold) 6px,
-    var(--wheat-light) 6px, var(--wheat-light) 8px,
-    transparent 8px, transparent 12px,
-    var(--wheat-deep) 12px, var(--wheat-deep) 14px,
-    var(--wheat-gold) 14px, var(--wheat-gold) 18px,
-    transparent 18px, transparent 24px
-  );
-  transform-origin: bottom center;
-  animation: swayWheat 3.5s ease-in-out infinite alternate;
-}
-
-.wheat-ear-heads {
-  position: absolute;
-  top: 0;
-  left: -20px;
-  width: calc(100vw + 40px);
-  height: 28px;
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="24" viewBox="0 0 32 24"><path fill="%23fbe282" d="M3 4h4v6H3zm16 2h4v6h-4zm-8 4h4v6h-4zm18-2h4v6h-4z"/><path fill="%23e2a829" d="M4 1h2v3H4zm16 2h2v3h-2zm-8 4h2v3h-2zm18-2h2v3h-2z"/><path fill="%23b37315" d="M5 10h1v12H5zm16 2h1v10h-1zm-8 4h1v8h-1zm18-2h1v10h-1z"/></svg>');
-  background-size: 32px 24px;
-  transform-origin: bottom center;
-  animation: swayWheat 3.5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 -3px 2px rgba(44, 26, 14, 0.25));
 }
 
 @keyframes swayWheat {
-  0% { transform: rotate(-2.4deg) skewX(-2deg); }
-  100% { transform: rotate(2.4deg) skewX(2deg); }
+  0% { transform: skewX(-2.5deg) scaleY(0.98); }
+  50% { transform: skewX(1deg) scaleY(1.02); }
+  100% { transform: skewX(3deg) scaleY(1); }
 }
 
-/* ========================================================
-   FALLING CHICKEN STRIPS & DETAILED FEATHERS
-   ======================================================== */
-#feather-canvas-container {
+/* CRT Scanline Filter */
+.crt-scanline-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.08) 50%);
+  background-size: 100% 4px;
   pointer-events: none;
-  overflow: hidden;
-  z-index: -1;
+  z-index: 999;
 }
 
-.floating-particle {
-  position: absolute;
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: fallAndSway linear infinite;
-  pointer-events: none;
-}
-
-.particle-tender {
-  width: 52px;
-  height: 52px;
-  filter: drop-shadow(3px 4px 0px rgba(0,0,0,0.38));
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%233A1F02" d="M4 3h10v2h4v3h2v7h-1v4h-3v2h-4v1H6v-1H3v-3H2V7h1V5h1V3z"/><path fill="%23964B00" d="M5 4h8v2h4v3h2v6h-1v4h-3v1h-4v1H7v-1H4v-2H3V8h1V6h1V4z"/><path fill="%23D37B11" d="M6 5h6v2h3v3h2v5h-1v3h-2v1h-4v1H8v-1H5v-2H4V9h1V7h1V5z"/><path fill="%23F5A623" d="M7 6h5v2h2v3h2v4h-1v2h-2v1h-3v1H9v-1H6v-1H5v-4h1V8h1V6z"/><path fill="%23FFD54F" d="M8 7h3v1h2v2h1v3h-1v1H9v1H7V9h1V7zm-2 5h1v2H6v-2zm7-1h1v2h-1v-2zm-3 4h2v1h-2v-1z"/><path fill="%23FFF2B2" d="M9 8h1v1H9V8zm3 2h1v1h-1v-1zm-4 4h1v1H8v-1z"/><circle cx="15" cy="14" r="0.8" fill="%237A3900"/><circle cx="8" cy="12" r="0.8" fill="%237A3900"/><circle cx="11" cy="16" r="0.8" fill="%237A3900"/></svg>');
-}
-
-.particle-feather {
-  width: 40px;
-  height: 40px;
-  filter: drop-shadow(2px 3px 0px rgba(0,0,0,0.25));
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%235A4222" d="M19 1c-1 3-3 6-7 9l-4 2 2 3 3-2c-2 4-2 6-2 9l2-2c1-4 4-7 7-10l3-2-2-3 2-2c0-1-1-2-2-2z"/><path fill="%23FFFFFF" d="M18 2c-1 3-3 5-6 8l-3 2 1 2 2-1c-2 3-2 5-2 8l1-1c1-4 4-6 6-9l2-2-1-2 2-2c0-1-1-2-1-3z"/><path fill="%23FFF6D1" d="M17 3c-1 2-2 4-5 7l-2 1 1 1 1-1c-1 3-1 4-1 6l1-1c1-3 3-5 5-7l2-1-1-1 1-1c0-1-1-2-1-3z"/><path fill="%23E5C875" d="M13 10l-1 1-5 5 1 1 5-5 1-1z"/></svg>');
-}
-
-@keyframes fallAndSway {
-  0% { transform: translateY(-60px) translateX(0) rotate(0deg); opacity: 0; }
-  12% { opacity: 0.95; }
-  50% { transform: translateY(50vh) translateX(55px) rotate(180deg); }
-  88% { opacity: 0.95; }
-  100% { transform: translateY(106vh) translateX(-45px) rotate(360deg); opacity: 0; }
-}
-
-/* ========================================================
-   RETRO JUKEBOX MUSIC CONSOLE (TOP-LEFT)
-   ======================================================== */
-.retro-jukebox-player {
+/* Falling Particles Layer */
+#particle-canvas-container {
   position: fixed;
-  top: 14px;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Elongated Crispy Chicken Tender Particles */
+.particle-tender {
+  position: absolute;
+  width: 64px;
+  height: 28px;
+  opacity: 0.92;
+  filter: drop-shadow(1px 2px 2px rgba(44, 26, 14, 0.35));
+  animation: fallTender 14s linear infinite;
+}
+
+@keyframes fallTender {
+  0% { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.95; }
+  50% { transform: translateY(48vh) translateX(30px) rotate(180deg); }
+  90% { opacity: 0.95; }
+  100% { transform: translateY(112vh) translateX(-25px) rotate(360deg); opacity: 0; }
+}
+
+/* Detailed Soft Chicken Feather Particles */
+.particle-feather {
+  position: absolute;
+  width: 44px;
+  height: 48px;
+  opacity: 0.88;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.18));
+  animation: swayFeather 16s ease-in-out infinite;
+}
+
+@keyframes swayFeather {
+  0% { transform: translateY(-10vh) translateX(0) rotate(-15deg); opacity: 0; }
+  15% { opacity: 0.9; }
+  25% { transform: translateY(22vh) translateX(35px) rotate(25deg); }
+  50% { transform: translateY(50vh) translateX(-35px) rotate(-20deg); }
+  75% { transform: translateY(78vh) translateX(30px) rotate(22deg); }
+  90% { opacity: 0.9; }
+  100% { transform: translateY(110vh) translateX(0) rotate(35deg); opacity: 0; }
+}
+
+/* Top-Left Retro Jukebox Music Console */
+.top-audio-bar {
+  position: fixed;
+  top: 12px;
   left: 14px;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .jukebox-btn {
-  background: linear-gradient(180deg, #7a421b 0%, #462208 100%);
-  border: 3px solid #231103;
-  box-shadow: inset 0 0 0 2px #d49b3d, 3px 4px 0px rgba(0,0,0,0.5);
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px;
-  cursor: pointer;
-  border-radius: 6px;
-  transition: transform 0.1s ease, filter 0.15s ease;
-}
-
-.jukebox-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
-.jukebox-btn:active { transform: translateY(2px); box-shadow: 1px 1px 0px rgba(0,0,0,0.5); }
-
-.jukebox-btn.is-playing .jukebox-disc-icon svg {
-  animation: spinRecord 3s linear infinite;
-}
-
-@keyframes spinRecord {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.jukebox-label {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.62rem;
-  color: var(--stardew-gold-light);
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 0px #000;
-}
-
-.jukebox-eq {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 16px;
-  width: 18px;
-}
-
-.jukebox-eq .bar {
-  flex: 1;
-  background: var(--stardew-gold);
-  height: 3px;
-  transition: height 0.2s;
-}
-
-.jukebox-btn.is-playing .bar-1 { animation: eqJump 0.6s infinite alternate; }
-.jukebox-btn.is-playing .bar-2 { animation: eqJump 0.4s 0.2s infinite alternate; }
-.jukebox-btn.is-playing .bar-3 { animation: eqJump 0.5s 0.1s infinite alternate; }
-
-@keyframes eqJump {
-  0% { height: 3px; }
-  100% { height: 16px; background: var(--wheat-light); }
-}
-
-/* ========================================================
-   SECRET EASTER EGG BUTTON
-   ======================================================== */
-.secret-easter-egg {
-  position: fixed;
-  background: none;
-  border: none;
-  cursor: pointer;
-  z-index: 998;
-  padding: 0;
-  outline: none;
-  transition: transform 0.2s ease;
-  filter: drop-shadow(2px 4px 5px rgba(0,0,0,0.4));
-}
-
-.secret-easter-egg:hover {
-  transform: scale(1.15) rotate(8deg);
-  filter: drop-shadow(0 0 10px #ffe57f);
-}
-
-.secret-easter-egg:active {
-  transform: scale(0.95);
-}
-
-/* ========================================================
-   HEADER & WOODEN SIGNBOARDS
-   ======================================================== */
-header {
-  text-align: center;
-  padding: 24px 10px 10px 10px;
-  position: relative;
-  z-index: 10;
-}
-
-.wood-sign-board {
-  display: inline-block;
-  background: linear-gradient(180deg, #8a481c 0%, #542b0e 100%);
-  border: 4px solid var(--wood-dark);
-  box-shadow: inset 0 0 0 3px #ab632e, 0 8px 16px rgba(0,0,0,0.6);
-  padding: 16px 36px;
-  position: relative;
-  border-radius: 4px;
-  margin-bottom: 16px;
-}
-
-.hanging-sign .hanging-chains {
-  position: absolute;
-  top: -24px;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 40px;
-  pointer-events: none;
-}
-
-.hanging-chains .chain {
-  width: 8px;
-  height: 24px;
-  background: repeating-linear-gradient(180deg, #1b120c 0px, #1b120c 4px, #4d3826 4px, #4d3826 8px);
-  border: 1px solid #000;
-}
-
-.title-main {
-  font-size: 1.85rem;
-  color: var(--stardew-gold-light);
-  text-shadow: 3px 3px 0px var(--wood-dark), 5px 5px 0px rgba(0,0,0,0.5);
-  letter-spacing: 2px;
-}
-
-.sub-title {
+  background: var(--wood-medium);
+  border: 3px solid var(--wood-dark);
+  border-radius: 8px 8px 4px 4px;
+  padding: 8px 12px;
+  color: var(--stardew-cream);
+  font-family: var(--font-pixel);
   font-size: 0.65rem;
-  color: #fad190;
-  margin-top: 6px;
-  letter-spacing: 1px;
-  text-shadow: 2px 2px 0px #000;
-}
-
-/* Wooden Scoreboard */
-.scoreboard-wood {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin: 12px auto 18px auto;
-  flex-wrap: wrap;
-  max-width: 1100px;
-}
-
-.score-pill {
-  background: var(--parchment-bg);
-  border: 3px solid var(--parchment-border);
-  box-shadow: inset 0 0 0 1px #fff, 0 4px 6px rgba(0,0,0,0.3);
-  padding: 7px 14px;
-  font-size: 0.65rem;
-  color: var(--text-dark);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  border-radius: 3px;
-}
-
-.score-pill span.val {
-  color: var(--stardew-red);
-  font-weight: bold;
-}
-
-#profile-pill { cursor: pointer; }
-#profile-pill:hover { background: var(--parchment-dark); }
-
-.cloud-status-badge { font-size: 0.6rem; }
-.cloud-online { color: var(--stardew-green-dark); }
-.cloud-offline { color: var(--stardew-red); }
-
-/* Champion Parchment */
-.champion-parchment {
-  display: none;
-  background: var(--parchment-bg);
-  border: 4px solid var(--stardew-gold);
-  color: var(--stardew-red);
-  padding: 12px;
-  max-width: 800px;
-  margin: 10px auto 20px auto;
-  font-size: 0.85rem;
-  font-weight: bold;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-  animation: gentlePulse 2s infinite alternate;
-}
-
-@keyframes gentlePulse {
-  0% { transform: scale(1); }
-  100% { transform: scale(1.02); }
-}
-
-/* ========================================================
-   NAVIGATION TABS & STARDEW BUTTONS
-   ======================================================== */
-.nav-tabs {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-bottom: 20px;
-}
-
-.tab-btn {
-  background: var(--parchment-bg);
-  color: var(--wood-dark);
-  border: 3px solid var(--wood-mid);
-  padding: 10px 16px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.68rem;
   cursor: pointer;
-  box-shadow: inset 0 0 0 1px #fff, 0 3px 0px var(--wood-dark);
-  transition: all 0.1s ease;
+  box-shadow: 0 4px 0 var(--wood-dark), 0 6px 12px rgba(0,0,0,0.3);
+  transition: all 0.12s ease;
 }
 
-.tab-btn:hover {
-  background: var(--parchment-dark);
+.jukebox-btn:hover {
+  background: var(--wood-light);
   transform: translateY(-2px);
-  box-shadow: inset 0 0 0 1px #fff, 0 5px 0px var(--wood-dark);
+  box-shadow: 0 6px 0 var(--wood-dark), 0 8px 14px rgba(0,0,0,0.35);
 }
 
-.tab-btn:active {
+.jukebox-btn:active {
   transform: translateY(2px);
-  box-shadow: inset 0 0 0 1px #fff, 0 1px 0px var(--wood-dark);
+  box-shadow: 0 2px 0 var(--wood-dark);
 }
 
-.tab-btn.active {
-  background: var(--stardew-green);
-  color: #fff;
-  border-color: var(--stardew-green-dark);
-  box-shadow: inset 0 0 0 1px #9be04e, 0 3px 0px #1e3609;
-}
-
-.stardew-btn {
-  background: var(--parchment-bg);
-  color: var(--wood-dark);
-  border: 3px solid var(--wood-mid);
-  padding: 8px 14px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.65rem;
-  cursor: pointer;
-  box-shadow: 0 3px 0px var(--wood-dark);
-}
-
-.stardew-btn:hover { background: var(--parchment-dark); }
-.stardew-btn:active { transform: translateY(2px); box-shadow: 0 1px 0px var(--wood-dark); }
-.stardew-btn.btn-sm { padding: 5px 8px; font-size: 0.55rem; }
-.stardew-btn.btn-primary { background: var(--stardew-gold); border-color: #8c6303; color: #2e1a02; }
-.stardew-btn.btn-success { background: var(--stardew-green); border-color: var(--stardew-green-dark); color: #fff; }
-.stardew-btn.btn-danger { background: var(--stardew-red); border-color: #701b12; color: #fff; }
-
-/* ========================================================
-   FULL BRACKET TOOLBAR
-   ======================================================== */
-.full-bracket-toolbar {
-  display: none;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto 15px auto;
-  padding: 10px 18px;
-  background: var(--parchment-bg);
-  border: 3px solid var(--wood-mid);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.toolbar-group { display: flex; align-items: center; gap: 10px; }
-.toolbar-label { font-size: 0.6rem; color: var(--wood-mid); }
-.toolbar-link {
-  color: var(--stardew-green-dark);
-  font-size: 0.6rem;
-  text-decoration: none;
-  border: 2px solid var(--stardew-green);
-  padding: 4px 8px;
-  background: #fff;
-}
-
-/* ========================================================
-   BRACKET LAYOUT & MATCH CARDS
-   ======================================================== */
-.section-divider-title {
-  display: none;
-  padding: 10px 16px;
-  margin: 25px 25px 12px 25px;
-  background: var(--wood-mid);
-  color: var(--stardew-gold-light);
-  border: 3px solid var(--wood-dark);
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-}
-
-#bracket-super-container { width: 100%; position: relative; }
-#zoomable-bracket-wrapper { transition: transform 0.2s ease; transform-origin: top center; width: 100%; }
-
-.bracket-container {
-  display: none;
-  padding: 15px 25px 70px 25px;
-  overflow-x: auto;
-  width: 100%;
-}
-.bracket-container.active-view { display: block; }
-
-.bracket-rounds-wrapper {
-  display: flex;
-  gap: 36px;
-  min-width: 1300px;
-  justify-content: flex-start;
-  padding-bottom: 25px;
-}
-
-.bracket-round { flex: 1; min-width: 290px; display: flex; flex-direction: column; }
-
-.round-header {
-  text-align: center;
-  padding: 9px;
-  background: var(--wood-mid);
-  border: 3px solid var(--wood-dark);
-  color: var(--stardew-gold-light);
-  font-size: 0.72rem;
-  margin-bottom: 22px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-}
-
-.bouts-list {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 100%;
-  gap: 24px;
-}
-
-.bout-card {
-  background: var(--parchment-bg);
-  border: 3px solid var(--wood-mid);
-  box-shadow: inset 0 0 0 1px #fff, 0 4px 8px rgba(0,0,0,0.3);
-  padding: 10px;
+.jukebox-icon-wrapper {
   position: relative;
-  border-radius: 4px;
-  transition: transform 0.15s ease;
-}
-
-.bout-card:hover { transform: translateY(-2px); }
-.bout-card.locked-bout { border-color: #8c2a2a; }
-.bout-card.greyed-out { opacity: 0.45; filter: grayscale(70%); pointer-events: none; }
-
-.bout-header-bar {
   display: flex;
-  justify-content: space-between;
-  font-size: 0.58rem;
-  margin-bottom: 8px;
-  border-bottom: 1px dashed var(--parchment-border);
-  padding-bottom: 4px;
-  color: var(--wood-mid);
-}
-
-.locked-badge { background: var(--stardew-red); color: #fff; padding: 2px 4px; border-radius: 2px; }
-.open-badge { background: var(--stardew-green); color: #fff; padding: 2px 4px; border-radius: 2px; }
-.points-awarded-badge { color: var(--stardew-green-dark); font-weight: bold; margin-left: 4px; }
-
-.team-slot {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 8px 10px;
-  margin: 5px 0;
-  background: rgba(255,255,255,0.7);
-  border: 2px solid var(--parchment-border);
-  border-radius: 3px;
-}
-
-.team-slot.winner-slot {
-  background: #d8f5b5;
-  border-color: var(--stardew-green);
-}
-
-.team-slot.eliminated-slot {
-  opacity: 0.45;
-  text-decoration: line-through;
-}
-
-.team-info { display: flex; align-items: center; gap: 8px; max-width: 65%; }
-.seed-badge { color: var(--wood-mid); font-size: 0.6rem; font-weight: bold; }
-.team-name { font-size: 0.68rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.action-col { display: flex; align-items: center; gap: 8px; }
-.vote-count { font-family: 'VT323', monospace; font-size: 1.6rem; color: var(--stardew-red); min-width: 28px; text-align: right; }
-
-.vote-btn {
-  background: var(--stardew-green);
-  color: #fff;
-  border: 2px solid var(--stardew-green-dark);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.52rem;
-  padding: 5px 8px;
-  cursor: pointer;
-  box-shadow: 0 2px 0px var(--stardew-green-dark);
-}
-
-.vote-btn:hover:not(:disabled) { background: #6dbb20; }
-.vote-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.vote-btn.has-voted { background: var(--stardew-gold); border-color: #8a6205; color: #231201; }
-
-.vs-badge { text-align: center; font-size: 0.55rem; color: var(--wood-mid); margin: 2px 0; }
-
-.grand-finals-wrapper { max-width: 580px; margin: 20px auto; }
-
-/* ========================================================
-   LEADERBOARD STYLES
-   ======================================================== */
-.stardew-panel {
-  background: var(--parchment-bg);
-  border: 4px solid var(--wood-mid);
-  box-shadow: inset 0 0 0 2px #fff, 0 8px 18px rgba(0,0,0,0.4);
-  padding: 24px;
-  border-radius: 4px;
-}
-
-.leaderboard-panel { max-width: 860px; margin: 15px auto 40px auto; }
-.stardew-title { text-align: center; color: var(--wood-dark); font-size: 1.15rem; margin-bottom: 8px; }
-.stardew-subtitle { text-align: center; font-size: 0.6rem; color: var(--wood-mid); margin-bottom: 16px; }
-
-.cloud-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  border: 2px dashed var(--parchment-border);
-  padding: 8px 12px;
-  margin-bottom: 16px;
-  font-size: 0.58rem;
-}
-
-.stardew-table { width: 100%; border-collapse: collapse; font-size: 0.68rem; }
-.stardew-table th {
-  background: var(--wood-mid);
-  color: var(--stardew-gold-light);
-  padding: 10px;
-  text-align: left;
-  border-bottom: 3px solid var(--wood-dark);
-}
-.stardew-table td { padding: 10px; border-bottom: 1px dashed var(--parchment-border); }
-.stardew-table tr.current-user-row td { background: #dff2cb; font-weight: bold; border-left: 4px solid var(--stardew-green); }
-
-/* ========================================================
-   MODALS & DIALOG BOXES
-   ======================================================== */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(2px);
-  z-index: 2000;
   justify-content: center;
-  align-items: center;
 }
 
-.stardew-dialog-box {
-  background: var(--parchment-bg);
-  border: 4px solid var(--wood-mid);
-  box-shadow: inset 0 0 0 2px #fff, 0 10px 25px rgba(0,0,0,0.6);
-  padding: 24px;
-  width: 90%;
-  max-width: 520px;
-  text-align: center;
-  border-radius: 4px;
-}
-
-.dialog-header-badge { font-size: 0.6rem; color: var(--stardew-green-dark); margin-bottom: 8px; }
-.dialog-title { font-size: 1rem; color: var(--wood-dark); margin-bottom: 12px; }
-.dialog-message { font-size: 0.65rem; color: var(--text-dark); line-height: 1.5; margin-bottom: 18px; }
-
-.stardew-input {
-  width: 100%;
-  background: #fff;
-  border: 3px solid var(--wood-mid);
-  color: var(--wood-dark);
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.75rem;
-  padding: 10px;
-  text-align: center;
-  margin-bottom: 14px;
-  outline: none;
-}
-
-.stardew-input:focus { border-color: var(--stardew-green); }
-.auth-btn-group { display: flex; flex-direction: column; gap: 12px; }
-.form-group { text-align: left; margin-bottom: 12px; }
-.form-group label { display: block; font-size: 0.55rem; color: var(--wood-mid); margin-bottom: 5px; }
-.modal-actions { display: flex; justify-content: center; gap: 10px; margin-top: 15px; }
-.dialog-error { color: var(--stardew-red); font-size: 0.58rem; margin-top: 8px; }
-
-/* Admin Overlay */
-.admin-dialog { max-width: 760px; max-height: 85vh; display: flex; flex-direction: column; text-align: left; }
-.admin-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--parchment-border); padding-bottom: 10px; margin-bottom: 12px; }
-.admin-actions-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-.admin-body { overflow-y: auto; padding-right: 6px; }
-.admin-bout-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px;
-  border: 1px solid var(--parchment-border);
-  background: #fff;
-  margin-bottom: 6px;
-  font-size: 0.62rem;
-}
-
-/* ========================================================
-   SINGLE MASCOT PEEKER (PASSIVE CORNER PEEKS)
-   ======================================================== */
-.mascot-peeker-container {
-  position: fixed;
-  z-index: 999;
-  pointer-events: none;
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.mascot-peeker-container.peek-bottom { bottom: 0; left: 50%; transform: translateX(-50%) translateY(120%); }
-.mascot-peeker-container.peek-bottom.show { transform: translateX(-50%) translateY(0); pointer-events: auto; }
-
-.mascot-peeker-container.peek-right { right: 0; top: 50%; transform: translateY(-50%) translateX(120%); }
-.mascot-peeker-container.peek-right.show { transform: translateY(-50%) translateX(0); pointer-events: auto; }
-
-.mascot-peeker-container.peek-left { left: 0; top: 50%; transform: translateY(-50%) translateX(-120%); }
-.mascot-peeker-container.peek-left.show { transform: translateY(-50%) translateX(0); pointer-events: auto; }
-
-.pixel-chicken-man {
-  width: 140px;
-  height: 140px;
-  cursor: pointer;
-  filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.4));
-}
-
-.speech-bubble {
-  background: #fff;
-  border: 3px solid var(--wood-dark);
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 0.65rem;
-  font-weight: bold;
-  color: var(--stardew-red);
+.jukebox-equalizer {
+  display: none;
+  gap: 2px;
   position: absolute;
-  top: -38px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
+  bottom: 3px;
 }
 
-/* Flapping wing animation */
-.mascot-peeker-container.show .mascot-left-wing {
-  transform-origin: 12px 42px;
-  animation: flapWingLeft 0.18s infinite alternate;
+.jukebox-equalizer span {
+  width: 3px;
+  height: 8px;
+  background: var(--stardew-gold);
+  animation: eqBounce 0.6s infinite alternate;
 }
 
-.mascot-peeker-container.show .mascot-right-wing {
-  transform-origin: 52px 42px;
-  animation: flapWingRight 0.18s infinite alternate;
+.jukebox-equalizer span:nth-child(2) { animation-delay: 0.2s; }
+.jukebox-equalizer span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes eqBounce {
+  0% { height: 2px; }
+  100% { height: 9px; }
 }
 
-@keyframes flapWingLeft {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(-32deg); }
+.jukebox-btn.is-playing .jukebox-equalizer {
+  display: flex;
 }
 
-@keyframes flapWingRight {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(32deg); }
+.jukebox-btn.is-playing .jukebox-svg {
+  filter: drop-shadow(0 0 4px var(--stardew-gold));
 }
 
-/* ========================================================
-   MASCOT SWARM ANIMATIONS (5s INVASION & 10s SCRAMBLE)
-   ======================================================== */
+/* Secret Randomized Golden Egg Easter Egg */
+#secret-easter-egg-btn {
+  position: fixed;
+  cursor: pointer;
+  z-index: 85;
+  transition: transform 0.2s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.35));
+}
+
+#secret-easter-egg-btn:hover {
+  transform: scale(1.3) rotate(8deg);
+  filter: drop-shadow(0 6px 10px rgba(255, 215, 0, 0.6));
+}
+
+#secret-easter-egg-btn:active {
+  transform: scale(0.9) rotate(-6deg);
+}
+
+/* 5-Second Swarm Screen Breakout Layer */
 #mascot-swarm-container {
   position: fixed;
   top: 0;
@@ -802,70 +294,788 @@ header {
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  z-index: 1002;
+  z-index: 950;
   overflow: hidden;
 }
 
 .swarm-chicken-unit {
   position: absolute;
-  pointer-events: auto;
-  cursor: pointer;
-  transition: transform 0.25s ease, opacity 0.8s ease;
-  animation: swarmJiggle 0.22s infinite alternate ease-in-out;
-  filter: drop-shadow(4px 5px 0px rgba(0,0,0,0.45));
-}
-
-.swarm-chicken-unit .swarm-speech-bubble {
-  position: absolute;
-  top: -32px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  border: 2px solid var(--wood-dark);
-  padding: 4px 8px;
-  font-size: 0.52rem;
-  font-weight: bold;
-  color: var(--stardew-red);
-  white-space: nowrap;
-  border-radius: 4px;
-  box-shadow: 2px 2px 0px rgba(0,0,0,0.3);
-}
-
-.swarm-chicken-unit .mascot-left-wing {
-  transform-origin: 12px 42px;
-  animation: flapWingLeft 0.12s infinite alternate;
-}
-
-.swarm-chicken-unit .mascot-right-wing {
-  transform-origin: 52px 42px;
-  animation: flapWingRight 0.12s infinite alternate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform-origin: center bottom;
+  animation: swarmJiggle 0.25s infinite alternate ease-in-out;
+  transition: transform 0.6s ease-in, opacity 0.5s ease-out;
 }
 
 @keyframes swarmJiggle {
-  0% { transform: translateY(0px) rotate(-3deg); }
-  100% { transform: translateY(-12px) rotate(3deg); }
+  0% { transform: translateY(0) rotate(-6deg) scale(1); }
+  100% { transform: translateY(-8px) rotate(6deg) scale(1.05); }
 }
 
-/* 10-Second Panic Scramble Exit Animation */
 .swarm-scramble-exit {
-  animation: scrambleAway 1.1s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards !important;
+  transform: translateY(120vh) scale(0.4) rotate(45deg) !important;
+  opacity: 0 !important;
 }
 
-@keyframes scrambleAway {
-  0% { transform: scale(1) translateY(0); opacity: 1; }
-  30% { transform: scale(1.15) translateY(-30px); }
-  100% { transform: scale(0.2) translateY(120vh) rotate(180deg); opacity: 0; }
+.swarm-bubble {
+  background: var(--stardew-cream);
+  border: 2px solid var(--wood-dark);
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  color: var(--wood-dark);
+  font-weight: bold;
+  margin-bottom: 2px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.25);
+  white-space: nowrap;
 }
 
-/* ========================================================
-   FOOTER
-   ======================================================== */
+/* Single Animated Mascot Peeker */
+#mascot-container {
+  position: fixed;
+  bottom: -150px;
+  right: 40px;
+  z-index: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  pointer-events: none;
+}
+
+#mascot-container.mascot-peeking {
+  transform: translateY(-165px);
+}
+
+.mascot-speech-bubble {
+  background: var(--stardew-cream);
+  color: var(--wood-dark);
+  border: 3px solid var(--wood-dark);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  box-shadow: 3px 3px 0 var(--wood-dark);
+  margin-bottom: 6px;
+  position: relative;
+  text-align: center;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.25s ease;
+}
+
+#mascot-container.mascot-peeking .mascot-speech-bubble {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.mascot-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 9px 8px 0 8px;
+  border-style: solid;
+  border-color: var(--stardew-cream) transparent transparent transparent;
+}
+
+.mascot-wing {
+  transform-origin: center;
+  animation: flapWing 0.2s infinite alternate ease-in-out;
+}
+
+@keyframes flapWing {
+  0% { transform: scaleY(0.85); }
+  100% { transform: scaleY(1.15); }
+}
+
+/* Header & Stardew Wood Sign */
+header {
+  text-align: center;
+  padding: 24px 10px 10px 10px;
+  position: relative;
+  z-index: 10;
+}
+
+.wood-banner {
+  display: inline-block;
+  background: var(--wood-medium);
+  border: 4px solid var(--wood-dark);
+  box-shadow: 0 6px 0 var(--wood-dark), 0 10px 20px rgba(0,0,0,0.3);
+  padding: 6px;
+  margin-bottom: 12px;
+}
+
+.wood-banner-border {
+  border: 2px dashed var(--wood-highlight);
+  padding: 12px 28px;
+  background: var(--wood-dark);
+}
+
+.stardew-title {
+  font-size: 2rem;
+  color: var(--stardew-yellow);
+  text-shadow: 3px 3px 0px #42220d, 0 0 10px rgba(255, 190, 38, 0.4);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Scoreboard Ribbon */
+.scoreboard-ribbon {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 10px auto 16px auto;
+  font-size: 0.65rem;
+  color: var(--wood-dark);
+  flex-wrap: wrap;
+}
+
+.score-card {
+  background: var(--parchment-bg);
+  border: 2px solid var(--parchment-border);
+  box-shadow: 2px 3px 0 var(--wood-dark);
+  padding: 6px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 3px;
+}
+
+.score-card span.val {
+  color: #8b0000;
+  font-weight: bold;
+}
+
+.score-card.pilot-card {
+  border-color: var(--stardew-gold);
+  cursor: pointer;
+  background: var(--stardew-cream);
+}
+
+.score-card.pilot-card:hover {
+  background: #fff;
+  transform: translateY(-1px);
+}
+
+.score-card.points-card span.val {
+  color: var(--stardew-dark-green);
+}
+
+.cloud-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.6rem;
+  font-weight: bold;
+}
+
+.cloud-online { color: var(--stardew-dark-green); }
+.cloud-offline { color: var(--stardew-red); }
+
+/* Navigation Tabs */
+.nav-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.wood-tab-btn {
+  background: var(--parchment-bg);
+  color: var(--wood-dark);
+  border: 3px solid var(--wood-dark);
+  padding: 9px 15px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  cursor: pointer;
+  box-shadow: 2px 3px 0 var(--wood-dark);
+  transition: all 0.1s ease;
+  border-radius: 4px;
+}
+
+.wood-tab-btn:hover {
+  background: #fff4d1;
+  transform: translateY(-2px);
+  box-shadow: 2px 5px 0 var(--wood-dark);
+}
+
+.wood-tab-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--wood-dark);
+}
+
+.wood-tab-btn.active {
+  background: var(--stardew-yellow);
+  color: var(--wood-dark);
+  border-color: var(--wood-dark);
+  font-weight: bold;
+  box-shadow: inset 2px 2px 0 #fff, 2px 3px 0 var(--wood-dark);
+}
+
+.wood-tab-btn.admin-trigger-btn {
+  border-color: #701c1c;
+  color: #701c1c;
+  background: #fbd6d6;
+}
+
+/* Full Bracket Control Toolbar */
+.full-bracket-toolbar {
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1350px;
+  margin: 0 auto 15px auto;
+  padding: 10px 18px;
+  background: var(--parchment-bg);
+  border: 3px solid var(--wood-dark);
+  box-shadow: 3px 4px 0 var(--wood-dark);
+  flex-wrap: wrap;
+  gap: 12px;
+  border-radius: 4px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.toolbar-label {
+  font-size: 0.65rem;
+  color: var(--wood-dark);
+  font-weight: bold;
+}
+
+.toolbar-link {
+  color: var(--wood-dark);
+  font-size: 0.65rem;
+  text-decoration: none;
+  border: 2px solid var(--wood-dark);
+  padding: 4px 8px;
+  background: var(--stardew-cream);
+  border-radius: 2px;
+}
+
+.toolbar-link:hover {
+  background: var(--stardew-yellow);
+}
+
+.zoom-btn {
+  background: var(--stardew-cream);
+  color: var(--wood-dark);
+  border: 2px solid var(--wood-dark);
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  padding: 5px 8px;
+  cursor: pointer;
+  border-radius: 2px;
+}
+
+.zoom-btn.active-zoom {
+  background: var(--stardew-gold);
+  font-weight: bold;
+}
+
+/* Bracket Containers */
+#bracket-super-container {
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+#zoomable-bracket-wrapper {
+  transition: transform 0.2s ease;
+  transform-origin: top center;
+  width: 100%;
+}
+
+.section-divider-title {
+  display: none;
+  padding: 12px 16px;
+  margin: 30px 25px 15px 25px;
+  background: var(--wood-dark);
+  border-left: 6px solid var(--stardew-yellow);
+  color: var(--stardew-yellow);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  box-shadow: 3px 3px 0 rgba(0,0,0,0.25);
+}
+
+.bracket-container {
+  display: none;
+  padding: 15px 25px 50px 25px;
+  overflow-x: auto;
+  width: 100%;
+}
+
+.bracket-container.active-view {
+  display: block;
+}
+
+.bracket-rounds-wrapper {
+  display: flex;
+  gap: 35px;
+  min-width: 1300px;
+  justify-content: flex-start;
+  padding-bottom: 25px;
+}
+
+.bracket-round {
+  flex: 1;
+  min-width: 290px;
+  display: flex;
+  flex-direction: column;
+}
+
+.round-header {
+  text-align: center;
+  padding: 10px;
+  background: var(--wood-medium);
+  border: 3px solid var(--wood-dark);
+  color: var(--stardew-cream);
+  font-size: 0.75rem;
+  text-shadow: 1px 1px 0 var(--wood-dark);
+  margin-bottom: 22px;
+  box-shadow: 2px 3px 0 var(--wood-dark);
+  border-radius: 4px;
+}
+
+.bouts-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+  gap: 26px;
+}
+
+/* Bout Cards */
+.bout-card {
+  background: var(--parchment-bg);
+  border: 3px solid var(--wood-dark);
+  box-shadow: 3px 4px 0 var(--wood-dark);
+  padding: 10px;
+  position: relative;
+  border-radius: 6px;
+  transition: transform 0.1s ease;
+}
+
+.bout-card:hover {
+  transform: translateY(-2px);
+}
+
+.bout-card.locked-bout {
+  border-color: #8b2522;
+  background: #f7deda;
+}
+
+.bout-card.greyed-out {
+  opacity: 0.45;
+  filter: grayscale(70%);
+  pointer-events: none;
+}
+
+.bout-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.58rem;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed var(--parchment-border);
+  color: var(--wood-dark);
+  font-weight: bold;
+}
+
+.locked-badge {
+  background: #bb342f;
+  color: #fff;
+  padding: 2px 5px;
+  font-size: 0.5rem;
+  border-radius: 2px;
+}
+
+.open-badge {
+  background: var(--stardew-green);
+  color: #fff;
+  padding: 2px 5px;
+  font-size: 0.5rem;
+  border-radius: 2px;
+}
+
+.points-awarded-badge {
+  color: var(--stardew-dark-green);
+  font-size: 0.55rem;
+  margin-left: 6px;
+}
+
+.team-slot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  margin: 5px 0;
+  background: var(--stardew-cream);
+  border: 2px solid var(--parchment-border);
+  border-radius: 4px;
+  position: relative;
+}
+
+.team-slot.winner-slot {
+  border-color: var(--stardew-green);
+  background: #eaf8e2;
+}
+
+.team-slot.eliminated-slot {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 65%;
+}
+
+.seed-badge {
+  color: #8b0000;
+  font-size: 0.65rem;
+  font-weight: bold;
+}
+
+.team-name {
+  font-size: 0.68rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--wood-dark);
+}
+
+.action-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vote-count {
+  font-family: var(--font-narrow);
+  font-size: 1.5rem;
+  color: #8b0000;
+  min-width: 28px;
+  text-align: right;
+  font-weight: bold;
+}
+
+.vote-btn {
+  background: var(--stardew-yellow);
+  color: var(--wood-dark);
+  border: 2px solid var(--wood-dark);
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  padding: 5px 8px;
+  cursor: pointer;
+  box-shadow: 1px 2px 0 var(--wood-dark);
+  border-radius: 3px;
+  transition: all 0.1s;
+}
+
+.vote-btn:hover:not(:disabled) {
+  background: #ffdd6b;
+  transform: translateY(-1px);
+}
+
+.vote-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  border-color: #888;
+}
+
+.vote-btn.has-voted {
+  background: var(--stardew-green);
+  color: #fff;
+  border-color: var(--stardew-dark-green);
+}
+
+.vs-badge {
+  text-align: center;
+  font-size: 0.52rem;
+  color: var(--wood-medium);
+  margin: 1px 0;
+}
+
+/* Modals & Parchment Dialogue Boxes */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(30, 18, 8, 0.78);
+  backdrop-filter: blur(2px);
+  z-index: 1005;
+  justify-content: center;
+  align-items: center;
+}
+
+.parchment-modal-box {
+  background: var(--parchment-bg);
+  border: 5px solid var(--wood-dark);
+  box-shadow: 0 0 0 3px var(--wood-highlight), 4px 6px 0 rgba(0,0,0,0.5);
+  padding: 24px;
+  width: 90%;
+  max-width: 480px;
+  text-align: center;
+  border-radius: 6px;
+}
+
+.modal-title {
+  color: var(--wood-dark);
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+}
+
+.modal-desc {
+  font-size: 0.65rem;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  color: var(--wood-medium);
+}
+
+.auth-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.auth-tab-btn {
+  background: var(--parchment-dark);
+  border: 2px solid var(--wood-dark);
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.auth-tab-btn.active {
+  background: var(--stardew-yellow);
+  font-weight: bold;
+}
+
+.auth-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.auth-label {
+  font-size: 0.6rem;
+  color: var(--wood-dark);
+  font-weight: bold;
+}
+
+.modal-input {
+  width: 100%;
+  background: #fff;
+  border: 2px solid var(--wood-dark);
+  color: var(--wood-dark);
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  padding: 10px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.modal-input:focus {
+  border-color: var(--stardew-gold);
+  background: #fffef2;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-error {
+  color: var(--stardew-red);
+  font-size: 0.6rem;
+  margin-top: 10px;
+}
+
+/* Operator Drawer */
+.admin-dialog {
+  background: var(--parchment-bg);
+  border: 5px solid var(--wood-dark);
+  box-shadow: 5px 6px 0 rgba(0,0,0,0.4);
+  width: 90%;
+  max-width: 780px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px dashed var(--wood-dark);
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.admin-title {
+  color: var(--wood-dark);
+  font-size: 1rem;
+}
+
+.close-admin-btn {
+  background: #bb342f;
+  color: #fff;
+  border: 2px solid var(--wood-dark);
+  font-family: var(--font-pixel);
+  padding: 5px 9px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.admin-body {
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.admin-actions-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.admin-bout-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border: 2px solid var(--wood-medium);
+  margin-bottom: 8px;
+  background: var(--stardew-cream);
+  font-size: 0.62rem;
+  border-radius: 4px;
+}
+
+.toggle-lock-btn {
+  padding: 5px 8px;
+  font-family: var(--font-pixel);
+  font-size: 0.55rem;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.toggle-lock-btn.is-locked {
+  background: #ffdede;
+  border: 2px solid #8b0000;
+  color: #8b0000;
+}
+
+.toggle-lock-btn.is-unlocked {
+  background: #e4f9d8;
+  border: 2px solid var(--stardew-dark-green);
+  color: var(--stardew-dark-green);
+}
+
+/* Leaderboard */
+.leaderboard-panel {
+  max-width: 860px;
+  margin: 15px auto 40px auto;
+  background: var(--parchment-bg);
+  border: 4px solid var(--wood-dark);
+  box-shadow: 4px 6px 0 var(--wood-dark);
+  padding: 24px;
+  border-radius: 6px;
+}
+
+.leader-title {
+  text-align: center;
+  color: var(--wood-dark);
+  font-size: 1.15rem;
+  margin-bottom: 6px;
+}
+
+.leader-subtitle {
+  text-align: center;
+  font-size: 0.6rem;
+  color: var(--wood-medium);
+  margin-bottom: 16px;
+}
+
+.cloud-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--stardew-cream);
+  border: 2px dashed var(--wood-dark);
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  font-size: 0.6rem;
+}
+
+.leader-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.7rem;
+}
+
+.leader-table th {
+  background: var(--wood-dark);
+  color: var(--stardew-yellow);
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.leader-table td {
+  padding: 10px 8px;
+  border-bottom: 1px dashed var(--parchment-border);
+}
+
+.leader-table tr.current-user-row td {
+  background: #eef8df;
+  color: var(--stardew-dark-green);
+  font-weight: bold;
+}
+
+/* Champion Banner */
+.champion-ribbon {
+  display: none;
+  background: linear-gradient(90deg, #ffbe26, #f8cf46, #5ca135, #ffbe26);
+  color: var(--wood-dark);
+  text-align: center;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  border: 3px solid var(--wood-dark);
+  box-shadow: 3px 4px 0 var(--wood-dark);
+}
+
 footer {
   text-align: center;
-  padding: 24px;
-  font-size: 0.55rem;
-  color: #c9e8a0;
-  border-top: 2px solid var(--wood-mid);
+  padding: 25px;
+  font-size: 0.58rem;
+  color: rgba(43, 23, 4, 0.7);
+  border-top: 2px dashed var(--wood-medium);
   margin-top: 40px;
-  text-shadow: 1px 1px 0px #1e3609;
 }
