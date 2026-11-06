@@ -2,27 +2,28 @@
  * App Module: Bootstrapper & Realtime Engine
  */
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Initialize Floating Feathers & Autumn Leaves IMMEDIATELY
+  // 1. Initialize Falling 8-Bit Chicken Tenders & Feathers IMMEDIATELY
   function initFloatingScenery() {
     const container = document.getElementById('feather-canvas-container');
     if (!container) return;
     container.innerHTML = '';
-    const particleCount = 28;
+    const particleCount = 32;
 
     for (let i = 0; i < particleCount; i++) {
       const particle = document.createElement('div');
-      const isLeaf = (i % 3 === 0);
-      particle.className = `floating-particle ${isLeaf ? 'particle-leaf' : 'particle-feather'}`;
-      
-      // Distribute randomly across screen width
+      // 60% chicken tenders, 40% farm feathers
+      const isTender = (i % 5 !== 0);
+      particle.className = `floating-particle ${isTender ? 'particle-tender' : 'particle-feather'}`;
+
+      // Distribute horizontally across screen width
       particle.style.left = Math.random() * 95 + 'vw';
-      
-      // Randomized fall speeds (10s to 24s)
-      const duration = 10 + Math.random() * 14;
+
+      // Varied fall speeds (11s to 24s)
+      const duration = 11 + Math.random() * 13;
       particle.style.animationDuration = duration + 's';
       particle.style.animationDelay = -(Math.random() * duration) + 's';
-      
-      const scale = 0.65 + Math.random() * 0.75;
+
+      const scale = 0.7 + Math.random() * 0.75;
       particle.style.transform = `scale(${scale})`;
       container.appendChild(particle);
     }
