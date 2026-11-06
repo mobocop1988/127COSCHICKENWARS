@@ -1,70 +1,66 @@
 /**
- * Mascot Module: 8-Bit Neck-Beard Chicken Guy screen peeker
- * Features immediate initial peek, edge rotation, cluck sound, and manual test trigger.
+ * Mascot Module: 8-Bit Neck-Beard Chicken Peeker Engine
  */
-const MascotModule = (function () {
-  let mascotEl = null;
+const MascotModule = (() => {
+  let isPeeking = false;
   let peekTimer = null;
-  let isCurrentlyPeeking = false;
+  const positions = ['pos-bottom', 'pos-left', 'pos-right', 'pos-top'];
 
-  function initMascot() {
-    mascotEl = document.getElementById('mascot-chicken-peeker');
-    if (!mascotEl) {
-      console.warn("Mascot element #mascot-chicken-peeker not found.");
-      return;
-    }
+  function triggerManualPeek() {
+    if (isPeeking) return;
+    showMascot();
+  }
 
-    // Fast initial peek after 3 seconds so the user immediately sees it working
+  function showMascot() {
+    const container = document.getElementById('mascot-chicken-peeker');
+    if (!container) return;
+
+    isPeeking = true;
+    positions.forEach(p => container.classList.remove(p));
+
+    // Choose random edge (weighted toward bottom and sides)
+    const randomPos = positions[Math.floor(Math.random() * positions.length)];
+    container.classList.add(randomPos);
+
+    // Audio cluck accompanying the visual emergence
+    AudioModule.playCluckSound();
+
+    requestAnimationFrame(() => {
+      container.classList.add('peek-active');
+    });
+
+    // Stay visible for 2.6 seconds, then retreat
     setTimeout(() => {
-      triggerPeek();
-    }, 3000);
+      container.classList.remove('peek-active');
+      setTimeout(() => {
+        isPeeking = false;
+        scheduleNextPeek();
+      }, 500);
+    }, 2600);
   }
 
   function scheduleNextPeek() {
     if (peekTimer) clearTimeout(peekTimer);
-    // Random interval between 10 and 22 seconds
-    const interval = Math.floor(Math.random() * 12000) + 10000;
-    peekTimer = setTimeout(() => {
-      triggerPeek();
-    }, interval);
+    // Random interval between 12 and 26 seconds
+    const delay = 12000 + Math.random() * 14000;
+    peekTimer = setTimeout(showMascot, delay);
   }
 
-  function triggerPeek() {
-    if (!mascotEl || isCurrentlyPeeking) return;
-    isCurrentlyPeeking = true;
-
-    // Pick random edge position
-    const positions = ['pos-bottom', 'pos-left', 'pos-right', 'pos-top'];
-    const selectedPos = positions[Math.floor(Math.random() * positions.length)];
-
-    mascotEl.classList.remove('pos-bottom', 'pos-left', 'pos-right', 'pos-top', 'peek-active');
-    mascotEl.classList.add(selectedPos);
-
-    // Audio cluck accompaniment
-    if (window.AudioModule && typeof AudioModule.playCluck === 'function') {
-      AudioModule.playCluck();
+  function init() {
+    const container = document.getElementById('mascot-chicken-peeker');
+    if (container) {
+      container.addEventListener('click', () => {
+        AudioModule.playCluckSound();
+        container.classList.remove('peek-active');
+      });
     }
 
-    // Slide in
-    setTimeout(() => {
-      mascotEl.classList.add('peek-active');
-    }, 50);
-
-    // Stay visible for 3.2 seconds, then retreat
-    setTimeout(() => {
-      mascotEl.classList.remove('peek-active');
-      setTimeout(() => {
-        isCurrentlyPeeking = false;
-        scheduleNextPeek();
-      }, 500);
-    }, 3200);
+    // Initial emergence 3 seconds after load so you see him immediately
+    setTimeout(showMascot, 3000);
   }
 
   return {
-    init: initMascot,
-    triggerManualPeek: () => {
-      isCurrentlyPeeking = false;
-      triggerPeek();
-    }
+    init,
+    triggerManualPeek
   };
 })();
